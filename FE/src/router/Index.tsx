@@ -10,12 +10,12 @@ import { TryOnProvider } from '@/contexts/TryOnContext'
 import LoginPage from '@/pages/99_Login/LoginPage'
 
 const router = createBrowserRouter([
+  // {
+  //   path: '/',
+  //   element: <LoginPage/>
+  // },
   {
     path: '/',
-    element: <LoginPage/>
-  },
-  {
-    path: '/main',
     element: <MainLayout/>,
     children: [
       {
