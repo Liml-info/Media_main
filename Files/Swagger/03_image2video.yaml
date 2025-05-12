@@ -1,0 +1,255 @@
+openapi: 3.0.0
+info:
+  title: Kling Image2Video 接口
+  version: 1.1.0
+  description: 基于图片生成视频的中间件接口设计
+
+servers:
+  - url: https://api.yourdomain.com/v1
+    description: 生产环境
+
+tags:
+  - name: ImageToVideo
+    description: 图片视频生成任务
+  - name: VideoResults
+    description: 视频结果查询
+  - name: History
+    description: 任务历史记录
+
+paths:
+  /image2video:
+    post:
+      tags: [ImageToVideo]
+      summary: 创建图片视频任务
+      description: 上传图片并生成视频
+      security:
+        - JwtAuth: []
+      requestBody:
+        description: 上传图片并生成视频所需的请求体
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Image2VideoRequest'
+              examples:
+                example1:
+                  summary: 基本请求示例
+                  value:
+                    model_name: kling-v1
+                    image: "base64_encoded_image"
+                    image_tail: ".jpg"
+                    prompt: "赛博朋克风格的城市夜景，霓虹灯闪烁，飞行汽车穿梭"
+                    negative_prompt: "低分辨率，模糊"
+                    cfg_scale: 0.5
+                    mode: std
+                    duration: 5
+      responses:
+        '202':
+          description: 任务已接受
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoTaskResponse'
+              examples:
+                example1:
+                  summary: 任务接受响应示例
+                  value:
+                    task_id: "vid_abc123"
+                    queue_position: 5
+                    estimated_wait: 300
+                    preview_image: "https://example.com/preview.jpg"
+        '413':
+          description: 文件体积过大
+        '415':
+          description: 不支持的图片格式
+
+  /image2video/{task_id}/result:
+    get:
+      tags: [VideoResults]
+      summary: 获取生成视频
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 当前任务状态
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStatusResponse'
+        '404':
+          description: 任务不存在
+
+  /image2video/history:
+    get:
+      tags: [History]
+      summary: 获取图片视频生成任务的历史记录
+      description: 查询图片视频生成任务的历史记录，支持分页查询。
+      security:
+        - JwtAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+          description: 每页显示的记录数量
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+          description: 记录偏移量
+      responses:
+        '200':
+          description: 历史记录列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VideoTaskHistoryItem'
+        '401':
+          description: 未授权访问
+
+components:
+  schemas:    
+    Image2VideoRequest:
+      description: 图片转视频请求的模式
+      type: object
+      required: [prompt]
+      properties:
+        model_name:
+          type: string
+          enum: [kling-v1, kling-v1-5, kling-v1-6]
+        image:
+          type: string
+        image_tail:
+          type: string
+        prompt:
+          type: string
+          maxLength: 2500
+          example: "赛博朋克风格的城市夜景，霓虹灯闪烁，飞行汽车穿梭"
+        negative_prompt:
+          type: string
+          maxLength: 2500
+          example: "低分辨率，模糊"
+        cfg_scale:
+          type: number
+          default: 0.5
+        mode:
+          type: string
+          enum: [std, pro]
+          default: std
+        duration:
+          type: integer  # 修改为整数类型，更符合实际情况
+          enum: [5, 10]
+          default: 5
+          description: 生成视频的时长（秒）
+
+    VideoTaskResponse:
+      description: 创建图片视频任务后返回的响应模式
+      type: object
+      properties:
+        task_id:
+          type: string
+          example: "vid_abc123"
+        queue_position:
+          type: integer
+          description: 当前队列位置
+        estimated_wait:
+          type: integer
+          description: 预估等待时间(秒)
+        preview_image:
+          type: string
+          format: uri
+          description: 图片预处理预览
+
+    TaskStatusResponse:
+      description: 视频生成任务的状态模式
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [uploading, preprocessing, rendering, postprocessing, completed]
+        current_stage_progress:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+        debug_info:
+          type: object
+          properties:
+            render_frames:
+              type: integer
+            gpu_utilization:
+              type: number
+
+    VideoTaskHistoryItem:
+      description: 图片视频生成任务的历史记录项
+      type: object
+      properties:
+        task_id:
+          type: string
+          example: "vid_abc123"
+        created_at:
+          type: string
+          format: date-time
+          description: 任务创建时间
+        status:
+          type: string
+          enum: [uploading, preprocessing, rendering, postprocessing, completed, failed]
+          description: 任务最终状态
+        # 新增图生视频请求参数
+        model_name:
+          type: string
+          enum: [kling-v1, kling-v1-5, kling-v1-6]
+        image:
+          type: string
+        image_tail:
+          type: string
+        prompt:
+          type: string
+          maxLength: 2500
+        negative_prompt:
+          type: string
+          maxLength: 2500
+        cfg_scale:
+          type: number
+          default: 0.5
+        mode:
+          type: string
+          enum: [std, pro]
+          default: std
+        static_mask:
+          type: string
+        dynamic_masks:
+          type: object
+        camera_control:
+          type: object
+        aspect_ratio:
+          type: string
+          enum: ['16:9', '9:16', '1:1']
+          default: '16:9'
+        duration:
+          type: integer
+          enum: [5, 10]
+          default: 5
+        external_task_id:
+          type: string
+        # 新增图生视频结果
+        video_url:
+          type: string
+          format: uri
+        video_duration:
+          type: integer
+          description: 视频时长（秒）
+  securitySchemes:
+    JwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "使用 JWT 进行身份验证，需要在请求头中添加 `Authorization: Bearer <token>`"
