@@ -1,0 +1,1259 @@
+{
+  "uuid": "ff72a497-fb71-4f9a-8369-c5f375660832",
+  "lastMigration": 33,
+  "name": "All",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 3006,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "641131bc-028f-4900-b623-7f06ca1d7ba9",
+      "type": "http",
+      "documentation": "检查邮箱是否注册",
+      "method": "get",
+      "endpoint": "auth/check-email",
+      "responses": [
+        {
+          "uuid": "cbee3d27-eadb-4b3a-8e50-a2b4481fae07",
+          "body": "{\n  \"exists\": {{faker 'datatype.boolean'}}\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "检查结果",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "710238a5-d4a0-4909-af84-53b23399d8de",
+      "type": "http",
+      "documentation": "发送注册验证码",
+      "method": "post",
+      "endpoint": "auth/register/code",
+      "responses": [
+        {
+          "uuid": "9bd9e721-4a7a-45b6-9715-ef796173539a",
+          "body": "",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "验证码发送成功",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "074f2959-df28-446c-9585-01bbb4b97e76",
+      "type": "http",
+      "documentation": "注册账号",
+      "method": "post",
+      "endpoint": "auth/register",
+      "responses": [
+        {
+          "uuid": "6392044f-14df-4011-a229-72b14479e8f9",
+          "body": "{\n  \"access_token\": \"\",\n  \"refresh_token\": \"\",\n  \"expires_in\": {{faker 'number.int' max=99999}}\n}",
+          "latency": 0,
+          "statusCode": 201,
+          "label": "注册成功",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "8b7bbca7-ffb7-40be-957d-19f9dab78a35",
+          "body": "",
+          "latency": 0,
+          "statusCode": 409,
+          "label": "邮箱已存在",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "dd8853bd-dad2-4640-8607-85dd2ea8062e",
+      "type": "http",
+      "documentation": "发送登录验证码",
+      "method": "post",
+      "endpoint": "auth/login/code",
+      "responses": [
+        {
+          "uuid": "ca8593ff-0464-4809-95cb-f8f4b2450b37",
+          "body": "",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "验证码发送成功",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "75dd4206-4e73-4959-878d-4dda95a90419",
+      "type": "http",
+      "documentation": "密码登录",
+      "method": "post",
+      "endpoint": "auth/login",
+      "responses": [
+        {
+          "uuid": "5db35959-fa77-45ff-bf5a-cc557b863554",
+          "body": "{\n  \"access_token\": \"\",\n  \"refresh_token\": \"\",\n  \"expires_in\": {{faker 'number.int' max=99999}}\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "登录成功",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "f9984aa9-b2c1-42b7-a8d2-adf2977ce798",
+          "body": "",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "无效凭证",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "1c9758d7-3441-4292-8b50-cb52b36fb0b0",
+      "type": "http",
+      "documentation": "验证码登录",
+      "method": "post",
+      "endpoint": "auth/login/verify",
+      "responses": [
+        {
+          "uuid": "16f3ac62-ead9-4c4a-babb-08b8c0fc07f2",
+          "body": "{\n  \"access_token\": \"\",\n  \"refresh_token\": \"\",\n  \"expires_in\": {{faker 'number.int' max=99999}}\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "登录成功",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "67019792-c90e-438e-b6eb-5156a41c54e1",
+      "type": "http",
+      "documentation": "发送密码重置验证码",
+      "method": "post",
+      "endpoint": "auth/password/code",
+      "responses": [
+        {
+          "uuid": "5dfaabdc-d65e-4b16-9b2c-da8dc4dacad9",
+          "body": "",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "验证码发送成功",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "b6d62de7-6427-41ea-80ac-33593021af7e",
+      "type": "http",
+      "documentation": "验证重置验证码",
+      "method": "post",
+      "endpoint": "auth/password/verify",
+      "responses": [
+        {
+          "uuid": "05f3b5bd-af2a-499d-872e-5a8b61bbaa21",
+          "body": "{\n  \"reset_token\": \"\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "验证成功",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "af0f8148-eecd-4800-ad1d-a85b2480c849",
+      "type": "http",
+      "documentation": "重置密码",
+      "method": "post",
+      "endpoint": "auth/password/reset",
+      "responses": [
+        {
+          "uuid": "76d71001-446a-498a-aafb-b5ffa1ff16f1",
+          "body": "",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "密码重置成功",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "1e09ace5-1608-4b6a-9a88-b38e0b441c1c",
+      "type": "http",
+      "documentation": "创建视频生成任务",
+      "method": "post",
+      "endpoint": "text2video",
+      "responses": [
+        {
+          "uuid": "7d09f576-532d-4ce5-8db1-24f9de4a6abb",
+          "body": "{\n  \"status\": \"{{oneOf (array 'uploading' 'preprocessing' 'rendering' 'postprocessing' 'completed')}}\",\n  \"current_stage_progress\": {{faker 'number.float'}},\n  \"debug_info\": {\n    \"render_frames\": {{faker 'number.int' max=99999}},\n    \"gpu_utilization\": {{faker 'number.int' max=99999}}\n  }\n}",
+          "latency": 0,
+          "statusCode": 202,
+          "label": "任务已接受",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "11a461d0-2b84-4885-8bd5-7bf82fa27c7b",
+          "body": "",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "参数校验失败",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "dc0dbef2-c0fe-4618-886a-68d8e365dead",
+          "body": "",
+          "latency": 0,
+          "statusCode": 429,
+          "label": "请求频率超限",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "9b4343b4-1cdb-443a-8747-82ea9a05d8c4",
+      "type": "http",
+      "documentation": "查询任务状态",
+      "method": "get",
+      "endpoint": "text2video/:task_id/result",
+      "responses": [
+        {
+          "uuid": "84390c54-3bb7-4fc4-a1e1-f6a9e0ed5d23",
+          "body": "{\n  \"status\": \"{{oneOf (array 'uploading' 'preprocessing' 'rendering' 'postprocessing' 'completed')}}\",\n  \"current_stage_progress\": {{faker 'number.float'}},\n  \"debug_info\": {\n    \"render_frames\": {{faker 'number.int' max=99999}},\n    \"gpu_utilization\": {{faker 'number.int' max=99999}}\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "当前任务状态",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "aa7a0c59-8742-4849-a70c-a734a152fecb",
+          "body": "",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "任务不存在",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "fbbeaa6c-d22c-47a5-9b4d-f35afdc065aa",
+      "type": "http",
+      "documentation": "获取任务历史",
+      "method": "get",
+      "endpoint": "text2video/history",
+      "responses": [
+        {
+          "uuid": "6d8946a1-07b6-49fb-9268-e53c205bc898",
+          "body": "[\n  {\n    \"task_id\": \"275950071163642\",\n    \"status\": \"99\",\n    \"created_at\": \"{{faker 'date.recent' 365}}\",\n    \"model_name\": \"\",\n    \"prompt\": \"石狮子在寺庙入口处欢快地舞动，摇头摆尾跳跃着传统舞狮步伐，红色绸带随风飘动，屋檐下的灯笼轻轻摇晃，鼓点声渐起，固定镜头。\",\n    \"negative_prompt\": \"\",\n    \"cfg_scale\": {{faker 'number.int' max=99999}},\n    \"mode\": \"{{oneOf (array 'std' 'pro')}}\",\n    \"aspect_ratio\": \"{{oneOf (array '16:9' '9:16' '1:1')}}\",\n    \"duration\": \"5100\",\n    \"external_task_id\": \"\",\n    \"video_url\": \"https://v2-kling.kechuangai.com/bs2/upload-ylab-stunt/cfa880d5-3828-4654-9d57-74455396faeb-w4OUQIRGIl0dk85MAwVZow-output.mp4?x-kcdn-pid=112452\",\n    \"video_duration\": {{faker 'number.int' max=99999}}\n  }\n]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "历史记录列表",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "dada315a-598e-4e13-b5bb-37bd11e855ab",
+      "type": "http",
+      "documentation": "创建图片视频任务",
+      "method": "post",
+      "endpoint": "image2video",
+      "responses": [
+        {
+          "uuid": "34db417a-f858-43e1-9cfe-a493b1394919",
+          "body": "{\n  \"task_id\": \"vid_abc123\",\n  \"queue_position\": {{faker 'number.int' max=99999}},\n  \"estimated_wait\": {{faker 'number.int' max=99999}},\n  \"preview_image\": \"\"\n}",
+          "latency": 0,
+          "statusCode": 202,
+          "label": "任务已接受",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "cb66e636-f6b5-4128-af16-32ae15ab022d",
+          "body": "{\n  \"task_id\": \"vid_abc123\",\n  \"queue_position\": 5,\n  \"estimated_wait\": 300,\n  \"preview_image\": \"https://example.com/preview.jpg\"\n}",
+          "latency": 0,
+          "statusCode": 202,
+          "label": "example1",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "9a1da2f4-57b6-4cd0-9470-2e29a1daa2f0",
+          "body": "",
+          "latency": 0,
+          "statusCode": 413,
+          "label": "文件体积过大",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "0304b590-bbf6-4c7f-a887-6a9c3133f559",
+          "body": "",
+          "latency": 0,
+          "statusCode": 415,
+          "label": "不支持的图片格式",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "0d926803-4a9c-4377-9f2a-872e396578c5",
+      "type": "http",
+      "documentation": "获取生成视频",
+      "method": "get",
+      "endpoint": "image2video/:task_id/result",
+      "responses": [
+        {
+          "uuid": "8611dac1-704e-4d21-a229-5e52ed5b8963",
+          "body": "{\n  \"status\": \"{{oneOf (array 'uploading' 'preprocessing' 'rendering' 'postprocessing' 'completed')}}\",\n  \"current_stage_progress\": {{faker 'number.float'}},\n  \"debug_info\": {\n    \"render_frames\": {{faker 'number.int' max=99999}},\n    \"gpu_utilization\": {{faker 'number.int' max=99999}}\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "当前任务状态",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "66c48f00-d64f-4f07-8352-563fcc71e266",
+          "body": "",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "任务不存在",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "3fc0c49b-e7f8-4fdf-be6b-364527960456",
+      "type": "http",
+      "documentation": "获取图片视频生成任务的历史记录",
+      "method": "get",
+      "endpoint": "image2video/history",
+      "responses": [
+        {
+          "uuid": "4f6aeac3-6c74-4e12-88ac-325b886bf4b6",
+          "body": "[\n  {\n    \"task_id\": \"275950071163642\",\n    \"created_at\": \"{{faker 'date.recent' 365}}\",\n    \"status\": \"{{oneOf (array 'uploading' 'preprocessing' 'rendering' 'postprocessing' 'completed' 'failed')}}\",\n    \"model_name\": \"{{oneOf (array 'kling-v1' 'kling-v1-5' 'kling-v1-6')}}\",\n    \"image\": \"https://p2-fdl.klingai.com/ksc2/oAvCLwHYIPZpjmj14lk05m9Fe0MbStypmMnGOut4hVZlawoB7PLVDrTax9ZPCt1rrU0eaatv_CswQnp7jWcz1WRfZrTW8s30qwoyAUZJEwI.jpg?x-kcdn-pid=112344&pkey=AAVIzL1m78H3srEWkpe_hgI5uZbfKM-xvwF7mbLsUApYHmHm7Ro38qpGT56iDCOmXIOUaubslez50nN3H02tOu0r_OR6PB5946MCPXb9aISeAHXfSRLgZ8OZs165TUW0JWU&cacheKey=ChtzZWN1cml0eS5rbGluZy5tZXRhX2VuY3J5cHQSUJJ9LBB9H4HCLaDRdWOUo2ZR6OzG6AmcC1dXGGjj2baeFe/DlicQ3cij4QQxcqiEDt+QModov7Fw0NdV/g9UwJfLZrN3iWfW4Qlqw38wHQD5GhKx0SMfc3kIW6B9XU6ZJt4K6wMiIHM4gmxxKKhb/YLh2YeLcjtamiLgS+cEGqNMo3xaoggwKAUwAQ==\",\n    \"image_tail\": \"\",\n    \"prompt\": \"石狮子在寺庙入口处欢快地舞动，摇头摆尾跳跃着传统舞狮步伐，红色绸带随风飘动，屋檐下的灯笼轻轻摇晃，鼓点声渐起，固定镜头。\",\n    \"negative_prompt\": \"\",\n    \"cfg_scale\": 0.5,\n    \"mode\": \"{{oneOf (array 'std' 'pro')}}\",\n    \"static_mask\": \"\",\n    \"dynamic_masks\": {},\n    \"camera_control\": {},\n    \"aspect_ratio\": \"{{oneOf (array '16:9' '9:16' '1:1')}}\",\n    \"duration\": \"5100\",\n    \"external_task_id\": \"\",\n    \"video_url\": \"https://v2-kling.kechuangai.com/bs2/upload-ylab-stunt/cfa880d5-3828-4654-9d57-74455396faeb-w4OUQIRGIl0dk85MAwVZow-output.mp4?x-kcdn-pid=112452\",\n    \"video_duration\": {{faker 'number.int' max=99999}}\n  },\n  {\n    \"task_id\": \"275950071163643\",\n    \"created_at\": \"{{faker 'date.recent' 365}}\",\n    \"status\": \"{{oneOf (array 'uploading' 'preprocessing' 'rendering' 'postprocessing' 'completed' 'failed')}}\",\n    \"model_name\": \"{{oneOf (array 'kling-v1' 'kling-v1-5' 'kling-v1-6')}}\",\n    \"image\": \"https://p2-fdl.klingai.com/ksc2/oAvCLwHYIPZpjmj14lk05m9Fe0MbStypmMnGOut4hVZlawoB7PLVDrTax9ZPCt1rrU0eaatv_CswQnp7jWcz1WRfZrTW8s30qwoyAUZJEwI.jpg?x-kcdn-pid=112344&pkey=AAVIzL1m78H3srEWkpe_hgI5uZbfKM-xvwF7mbLsUApYHmHm7Ro38qpGT56iDCOmXIOUaubslez50nN3H02tOu0r_OR6PB5946MCPXb9aISeAHXfSRLgZ8OZs165TUW0JWU&cacheKey=ChtzZWN1cml0eS5rbGluZy5tZXRhX2VuY3J5cHQSUJJ9LBB9H4HCLaDRdWOUo2ZR6OzG6AmcC1dXGGjj2baeFe/DlicQ3cij4QQxcqiEDt+QModov7Fw0NdV/g9UwJfLZrN3iWfW4Qlqw38wHQD5GhKx0SMfc3kIW6B9XU6ZJt4K6wMiIHM4gmxxKKhb/YLh2YeLcjtamiLgS+cEGqNMo3xaoggwKAUwAQ==\",\n    \"image_tail\": \"\",\n    \"prompt\": \"石狮子在寺庙入口处欢快地舞动，摇头摆尾跳跃着传统舞狮步伐，红色绸带随风飘动，屋檐下的灯笼轻轻摇晃，鼓点声渐起，固定镜头。dddddd\",\n    \"negative_prompt\": \"\",\n    \"cfg_scale\": 0.5,\n    \"mode\": \"{{oneOf (array 'std' 'pro')}}\",\n    \"static_mask\": \"\",\n    \"dynamic_masks\": {},\n    \"camera_control\": {},\n    \"aspect_ratio\": \"{{oneOf (array '16:9' '9:16' '1:1')}}\",\n    \"duration\": \"5100\",\n    \"external_task_id\": \"\",\n    \"video_url\": \"https://v2-kling.kechuangai.com/bs2/upload-ylab-stunt/cfa880d5-3828-4654-9d57-74455396faeb-w4OUQIRGIl0dk85MAwVZow-output.mp4?x-kcdn-pid=112452\",\n    \"video_duration\": {{faker 'number.int' max=99999}}\n  }\n]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "历史记录列表",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "9e182db7-fe56-43f2-8502-d51a83ba044f",
+          "body": "",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "未授权访问",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "d7bc2d27-e682-4c6c-a6b8-e6e0c978fe26",
+      "type": "http",
+      "documentation": "发起图像生成请求",
+      "method": "post",
+      "endpoint": "create-image",
+      "responses": [
+        {
+          "uuid": "0babcaf3-2999-41b4-bd38-8c96d5efe492",
+          "body": "{\n  \"code\": {{faker 'number.int' max=99999}},\n  \"message\": \"\",\n  \"request_id\": \"\",\n  \"data\": {\n    \"task_id\": \"\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "成功提交请求",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "51504253-269a-441c-af76-022eac69682d",
+          "body": "{\n  \"code\": {{faker 'number.int' max=99999}},\n  \"message\": \"\"\n}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "参数填写错误",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "8c8e0768-0a2a-4dcb-b67c-9cb55e14601a",
+      "type": "http",
+      "documentation": "获取生成图片状态",
+      "method": "get",
+      "endpoint": "create-image/:task_id/result",
+      "responses": [
+        {
+          "uuid": "294143a8-50cc-4ea8-a8f6-3087083d6c52",
+          "body": "{\n  \"status\": \"{{oneOf (array 'uploading' 'preprocessing' 'rendering' 'postprocessing' 'completed')}}\",\n  \"current_stage_progress\": {{faker 'number.float'}},\n  \"debug_info\": {\n    \"render_frames\": {{faker 'number.int' max=99999}},\n    \"gpu_utilization\": {{faker 'number.int' max=99999}}\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "当前任务状态",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "8605e149-7dea-48b7-b807-d75c6a379ef7",
+          "body": "",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "任务不存在",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "1ccf3dc6-5d79-4caa-8fca-bf1e830e4d21",
+      "type": "http",
+      "documentation": "获取图片生成任务的历史记录",
+      "method": "get",
+      "endpoint": "create-image/history",
+      "responses": [
+        {
+          "uuid": "ae59b371-9222-4875-a530-1d31079d71b9",
+          "body": "[\n  {\n    \"task_id\": \"img_abc123\",\n    \"created_at\": \"{{faker 'date.recent' 365}}\",\n    \"status\": \"{{oneOf (array 'uploading' 'preprocessing' 'rendering' 'postprocessing' 'completed' 'failed')}}\",\n    \"model_name\": \"\",\n    \"prompt\": \"\",\n    \"negative_prompt\": \"\",\n    \"image\": \"\",\n    \"image_reference\": \"\",\n    \"image_fidelity\": {{faker 'number.int' max=99999}},\n    \"human_fidelity\": {{faker 'number.int' max=99999}},\n    \"n\": {{faker 'number.int' max=99999}},\n    \"aspect_ratio\": \"\",\n    \"image_urls\": [\n      \"https://p4-fdl.klingai.com/ksc2/uu7qO2h68Xyv2B1ySgGkgLSiZibiRBdZdCcsMGzSsnJ7l5zId8IEbckdqk4MSEuqXLY2Enc1kesgqDRK6SajG0cWsMo5hdjGvR_hlRyVpdg.jpg?x-kcdn-pid=112344&pkey=AAWC_6DqMxwt_4-YayLb-lnw-IC5HrY5LSgat-8CcwtLXZWMeXbcer7S9tF5zSZj1RQnv-heBo3wpqE74z9xTTNIJMxOPFy_CH9F1jXpJ8oZlrDbpszP24PWYXAp2Xynlww&cacheKey=ChtzZWN1cml0eS5rbGluZy5tZXRhX2VuY3J5cHQSUEkqRmjWCkv9aSTox5LXyXGgZHKjbwEes5amx0m/S3ouq5LRZ50b8NcteLXPdf3mC2zegm+ISGaxygo2nx/xsGBhaLpX5QV1PsejSvDqOOZaGhJgXwAOuDe6+6K7OFNJWtBS/DQiIC8M4IL0EbvoQF31W+pmvlO+A2jtSFVIESxkqwMZF8d5KAUwAQ==\"\n      ,\n      \"https://p2-kling.klingai.com/bs2/upload-ylab-stunt/special-effect/output/HB1_PROD_ai_web_277385115154046_8588999717375858639/2047201032715513792/temp.png?x-kcdn-pid=112452\"\n    ]\n  }\n]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "历史记录列表",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "9f1031df-352f-4311-81ba-66c4b6942ccb",
+          "body": "",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "未授权访问",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "c59609df-d27e-48f0-9521-c3eb8c92f1a6",
+      "type": "http",
+      "documentation": "发起虚拟试穿图片生成请求",
+      "method": "post",
+      "endpoint": "create-virtual-try-on-image",
+      "responses": [
+        {
+          "uuid": "80b7a209-ee36-4cbe-9ffb-08c2c2360177",
+          "body": "{\n  \"code\": {{faker 'number.int' max=99999}},\n  \"message\": \"\",\n  \"request_id\": \"\",\n  \"data\": {\n    \"task_id\": \"\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "成功提交请求",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "c1db2345-75e1-48f7-b36c-8b48511c97fa",
+          "body": "{\n  \"code\": {{faker 'number.int' max=99999}},\n  \"message\": \"\"\n}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "参数填写错误",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "a9db05b6-1380-481a-9d12-7ac9b3dbf562",
+      "type": "http",
+      "documentation": "查询任务状态",
+      "method": "get",
+      "endpoint": "create-virtual-try-on-image/:task_id/result",
+      "responses": [
+        {
+          "uuid": "b5e0a486-7620-417e-bed1-baf3d0fea5ae",
+          "body": "{\n  \"status\": \"{{oneOf (array 'uploading' 'preprocessing' 'rendering' 'postprocessing' 'completed')}}\",\n  \"current_stage_progress\": {{faker 'number.float'}},\n  \"debug_info\": {\n    \"render_frames\": {{faker 'number.int' max=99999}},\n    \"gpu_utilization\": {{faker 'number.int' max=99999}}\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "当前任务状态",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "1a143a34-05fa-4e32-bb4f-3c282166c988",
+          "body": "",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "任务不存在",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "4d5e678b-f0c2-4586-be95-bf3a2dc85263",
+      "type": "http",
+      "documentation": "获取任务历史",
+      "method": "get",
+      "endpoint": "create-virtual-try-on-image/history",
+      "responses": [
+        {
+          "uuid": "67470f09-69fe-4040-90a8-9cd94abdf5df",
+          "body": "[\n  {\n    \"task_id\": \"{{faker 'date.recent' 365}}\",\n    \"status\": \"\",\n    \"created_at\": \"{{faker 'date.recent' 365}}\",\n    \"model_name\": \"\",\n    \"base_image\": \"https://p2-kling.klingai.com/bs2/upload-ylab-stunt/kling/tryon/model/v3/女模特3.png?x-kcdn-pid=112452\",\n    \"clothing_image\": \"https://p2-kling.klingai.com/bs2/upload-ylab-stunt/kling/tryon/model/v3/上衣4.png?x-kcdn-pid=112452\",\n    \"image_url\": \"https://p2-kling.klingai.com/bs2/upload-ylab-stunt/special-effect/output/HB1_PROD_ai_web_278510289177812/-7983768081223887387/temp.png?x-kcdn-pid=112452\"\n  },\n  {\n    \"task_id\": \"2\",\n    \"status\": \"\",\n    \"created_at\": \"{{faker 'date.recent' 365}}\",\n    \"model_name\": \"\",\n    \"base_image\": \"\",\n    \"clothing_image\": \"\",\n    \"image_url\": \"https://p2-kling.klingai.com/bs2/upload-ylab-stunt/special-effect/output/HB1_PROD_ai_web_278510289177812/-7983768081223887387/temp.png?x-kcdn-pid=112452\"\n  },\n  {\n    \"task_id\": \"3\",\n    \"status\": \"\",\n    \"created_at\": \"{{faker 'date.recent' 365}}\",\n    \"model_name\": \"\",\n    \"base_image\": \"\",\n    \"clothing_image\": \"\",\n    \"image_url\": \"https://p2-kling.klingai.com/bs2/upload-ylab-stunt/special-effect/output/HB1_PROD_ai_web_278510289177812/-7983768081223887387/temp.png?x-kcdn-pid=112452\"\n  }\n]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "历史记录列表",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "641131bc-028f-4900-b623-7f06ca1d7ba9"
+    },
+    {
+      "type": "route",
+      "uuid": "710238a5-d4a0-4909-af84-53b23399d8de"
+    },
+    {
+      "type": "route",
+      "uuid": "074f2959-df28-446c-9585-01bbb4b97e76"
+    },
+    {
+      "type": "route",
+      "uuid": "dd8853bd-dad2-4640-8607-85dd2ea8062e"
+    },
+    {
+      "type": "route",
+      "uuid": "75dd4206-4e73-4959-878d-4dda95a90419"
+    },
+    {
+      "type": "route",
+      "uuid": "1c9758d7-3441-4292-8b50-cb52b36fb0b0"
+    },
+    {
+      "type": "route",
+      "uuid": "67019792-c90e-438e-b6eb-5156a41c54e1"
+    },
+    {
+      "type": "route",
+      "uuid": "b6d62de7-6427-41ea-80ac-33593021af7e"
+    },
+    {
+      "type": "route",
+      "uuid": "af0f8148-eecd-4800-ad1d-a85b2480c849"
+    },
+    {
+      "type": "route",
+      "uuid": "1e09ace5-1608-4b6a-9a88-b38e0b441c1c"
+    },
+    {
+      "type": "route",
+      "uuid": "9b4343b4-1cdb-443a-8747-82ea9a05d8c4"
+    },
+    {
+      "type": "route",
+      "uuid": "fbbeaa6c-d22c-47a5-9b4d-f35afdc065aa"
+    },
+    {
+      "type": "route",
+      "uuid": "dada315a-598e-4e13-b5bb-37bd11e855ab"
+    },
+    {
+      "type": "route",
+      "uuid": "0d926803-4a9c-4377-9f2a-872e396578c5"
+    },
+    {
+      "type": "route",
+      "uuid": "3fc0c49b-e7f8-4fdf-be6b-364527960456"
+    },
+    {
+      "type": "route",
+      "uuid": "d7bc2d27-e682-4c6c-a6b8-e6e0c978fe26"
+    },
+    {
+      "type": "route",
+      "uuid": "8c8e0768-0a2a-4dcb-b67c-9cb55e14601a"
+    },
+    {
+      "type": "route",
+      "uuid": "1ccf3dc6-5d79-4caa-8fca-bf1e830e4d21"
+    },
+    {
+      "type": "route",
+      "uuid": "c59609df-d27e-48f0-9521-c3eb8c92f1a6"
+    },
+    {
+      "type": "route",
+      "uuid": "a9db05b6-1380-481a-9d12-7ac9b3dbf562"
+    },
+    {
+      "type": "route",
+      "uuid": "4d5e678b-f0c2-4586-be95-bf3a2dc85263"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    },
+    {
+      "key": "Access-Control-Allow-Origin",
+      "value": "*"
+    },
+    {
+      "key": "Access-Control-Allow-Methods",
+      "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+    },
+    {
+      "key": "Access-Control-Allow-Headers",
+      "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": [],
+  "callbacks": []
+}
