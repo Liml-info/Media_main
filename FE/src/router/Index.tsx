@@ -7,15 +7,15 @@ import Picture from '@/pages/03_Picture'
 import { VideoProvider } from '@/contexts/VideoContext'
 import { PictureProvider } from '@/contexts/PictureContext'
 import { TryOnProvider } from '@/contexts/TryOnContext'
-import LoginPage from '@/pages/99_Login/LoginPage'
+import AuthPage from '@/pages/99_Login/AuthPage'
 
 const router = createBrowserRouter([
-  // {
-  //   path: '/',
-  //   element: <LoginPage/>
-  // },
   {
     path: '/',
+    element: <AuthPage/>
+  },
+  {
+    path: '/main',
     element: <MainLayout/>,
     children: [
       {
