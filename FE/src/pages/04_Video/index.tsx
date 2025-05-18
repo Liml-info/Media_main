@@ -4,7 +4,26 @@ import { useContext, useMemo } from "react";
 import ImgUpload from "./components/ImgUpload";
 import TextArea from "antd/es/input/TextArea";
 import { VideoContext } from "@/contexts/VideoContext";
+import type { TabsProps } from 'antd';
 const { Title, Text } = Typography;
+
+
+
+const Types: TabsProps['items'] = [
+  {
+    key: '1',
+    label: '文生ビデオ',
+    children: 'Content of Tab Pane 1',
+  },
+  {
+    key: '2',
+    label: '図生ビデオ',
+    children: 'Content of Tab Pane 2',
+  }
+];
+
+
+
 
 const App: React.FC = () => {
   const { state, dispatch } = useContext(VideoContext);

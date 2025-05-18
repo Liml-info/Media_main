@@ -8,6 +8,8 @@ import { VideoProvider } from '@/contexts/VideoContext'
 import { PictureProvider } from '@/contexts/PictureContext'
 import { TryOnProvider } from '@/contexts/TryOnContext'
 import AuthPage from '@/pages/99_Login/AuthPage'
+import Assets from '@/pages/02_Assets'
+import AllTools from '@/pages/07_AllTools'
 
 const router = createBrowserRouter([
   {
@@ -20,15 +22,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: '',
-        element: <div>Home</div>
+        element: <AllTools/>
       },
       {
         path: 'assets',
-        element: <div>assets</div>
-      },
-      {
-        path: 'toolbox',
-        element: <div>tools</div>
+        element: <Assets/>
       }
     ]
   },

@@ -25,12 +25,12 @@ const items: MenuItem[] = [
 ];
 const topItems: MenuItem[] = [
   {
-    key: '/',
+    key: '/main',
     icon: <HomeOutlined />,
     label: 'トップページ',
   },
   {
-    key: '/assets',
+    key: '/main/assets',
     icon: <FolderOutlined />,
     label: '資産管理',
   }
@@ -79,9 +79,7 @@ const ToolLayout: React.FC = () => {
             <Outlet />
           </Splitter.Panel>
           <Splitter.Panel>
-            <HistoryProvider>
             <ToolRight />
-            </HistoryProvider>
           </Splitter.Panel>
         </Splitter>
       </Content>

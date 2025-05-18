@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import { Tabs, Form, Input, Button, Checkbox, Space } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
-import { createStyles } from 'antd-style';
+import { createStyles,keyframes } from 'antd-style';
 import type { TabsProps } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { fetchHistory } from '@/services/getHistory';
 
-const useStyles = createStyles(({ }) => ({
+const useStyles = createStyles(({ }) => {
+  
+  const gradientMove = keyframes`
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(50%, 50%) rotate(360deg); }
+    `;
+  return{
   cyberBgStyle: {
     display: 'flex',
     justifyContent: 'center',
@@ -21,18 +28,14 @@ const useStyles = createStyles(({ }) => ({
     '&::before': {
       content: '""',
       position: 'absolute',
-      width: '500px',
-      height: '500px',
+      width: '600px',
+      height: '600px',
       background: 'linear-gradient(45deg, #00ff88, #09f)',
       borderRadius: '30% 70% 70% 30%/30% 30% 70% 70%',
-      animation: 'gradientMove 15s infinite alternate',
+      animation: `${gradientMove} 15s infinite alternate`,
       filter: 'blur(80px)',
       opacity: 0.3
     }
-  },
-  '@keyframes gradientMove': {
-    '0%': { transform: 'translate(-50%, -50%) rotate(0deg)' },
-    '100%': { transform: 'translate(50%, 50%) rotate(360deg)' }
   },
   container: {
     
@@ -46,44 +49,45 @@ const useStyles = createStyles(({ }) => ({
   border: "1px solid rgba(255,255,255,0.1)",
   boxShadow: "0 0 40px rgba(0,255,136,0.15)"
   }
-}));
-const { TabPane } = Tabs;
+}
+});
 
 const AuthPage = () => {
   const [activeKey, setActiveKey] = useState('login');
   const { styles } = useStyles();
-  const items: TabsProps['items'] = [
-    {
-      key: 'login',
-      label: 'ユーザーログイン',
-      children: <LoginForm switchTab={setActiveKey} />,
-    },
-    {
-      key: 'register',
-      label: '新規ユーザー登録',
-      children: <RegisterForm />,
-    },
-    {
-      key: 'forgot',
-      label: 'パスワードを忘れた',
-      children: <ForgotPasswordForm />,
-      forceRender: true, // 強制レンダリングを有効にして、タブ切り替え時に再レンダリングされるようにします。
-    },
-  ];
+  // const items: TabsProps['items'] = [
+  //   {
+  //     key: 'login',
+  //     label: 'ユーザーログイン',
+  //     children: <LoginForm switchTab={setActiveKey} />,
+  //   },
+  //   {
+  //     key: 'register',
+  //     label: '新規ユーザー登録',
+  //     children: <RegisterForm />,
+  //   },
+  //   {
+  //     key: 'forgot',
+  //     label: 'パスワードを忘れた',
+  //     children: <ForgotPasswordForm />,
+  //     forceRender: true, // 強制レンダリングを有効にして、タブ切り替え時に再レンダリングされるようにします。
+  //   },
+  // ];
   return (
     <div className={styles.cyberBgStyle}>
       {/* 動的グラデーションレイヤー */}
       <div className="gradient-layer"></div>
       
       <div className={styles.container}>
-        <Tabs 
+      <LoginForm />
+        {/* <Tabs 
           activeKey={activeKey}
           onChange={setActiveKey}
           centered
           tabBarStyle={{ border: 'none' }}
           items={items}
         >
-        </Tabs>
+        </Tabs> */}
       </div>
     </div>
   );
@@ -93,11 +97,12 @@ const AuthPage = () => {
 interface LoginFormProps {
   switchTab: React.Dispatch<React.SetStateAction<string>>;
 }
-const LoginForm = ({switchTab}:LoginFormProps) => {
+const LoginForm = () => {
   const navigate = useNavigate();
   const onFinish = (values: any) => {
     console.log('Received values of form: ', values);
     navigate('/main'); // ログイン成功後にメイン画面に遷移
+    //fetchHistory();
   };
 return (
   <Form 
@@ -114,78 +119,78 @@ return (
       <Button type="primary" htmlType="submit" block>
         ログイン
       </Button>
-      <div style={{ marginTop: 16 }}>
+      {/* <div style={{ marginTop: 16 }}>
         アカウントがありませんか？ 
         <Button type="link" onClick={() => switchTab('register')}>
           今すぐ登録
         </Button>
-      </div>
+      </div> */}
     </Form.Item>
-    <Form.Item>
+    {/* <Form.Item>
       <Button type="link" onClick={() => switchTab('forgot')}>
         パスワードを忘れましたか？
       </Button>
-    </Form.Item>
+    </Form.Item> */}
   </Form>
 );
 }
 
-// 新規登録フォームコンポーネント
-const RegisterForm = () => (
-  <Form>
-    <Form.Item name="email" rules={[{ type: 'email', required: true,message:"メールアドレスを入力してください。" }]}>
-      <Input prefix={<MailOutlined />} placeholder="メールアドレス" />
-    </Form.Item>
+// // 新規登録フォームコンポーネント
+// const RegisterForm = () => (
+//   <Form>
+//     <Form.Item name="email" rules={[{ type: 'email', required: true,message:"メールアドレスを入力してください。" }]}>
+//       <Input prefix={<MailOutlined />} placeholder="メールアドレス" />
+//     </Form.Item>
 
-    <Form.Item name="password" rules={[{ required: true ,message:"パスワードを入力してください。"}]}>
-      <Input.Password prefix={<LockOutlined />} placeholder="パスワードを設定" />
-    </Form.Item>
+//     <Form.Item name="password" rules={[{ required: true ,message:"パスワードを入力してください。"}]}>
+//       <Input.Password prefix={<LockOutlined />} placeholder="パスワードを設定" />
+//     </Form.Item>
 
-    <Form.Item
-      name="confirm"
-      dependencies={['password']}
-      rules={[
-        ({ getFieldValue }) => ({
-          validator(_, value) {
-            if (!value || getFieldValue('password') === value) {
-              return Promise.resolve();
-            }
-            return Promise.reject('パスワードが一致しません！');
-          }
-        })
-      ]}
-    >
-      <Input.Password prefix={<LockOutlined />} placeholder="パスワードを確認" />
-    </Form.Item>
+//     <Form.Item
+//       name="confirm"
+//       dependencies={['password']}
+//       rules={[
+//         ({ getFieldValue }) => ({
+//           validator(_, value) {
+//             if (!value || getFieldValue('password') === value) {
+//               return Promise.resolve();
+//             }
+//             return Promise.reject('パスワードが一致しません！');
+//           }
+//         })
+//       ]}
+//     >
+//       <Input.Password prefix={<LockOutlined />} placeholder="パスワードを確認" />
+//     </Form.Item>
 
-    <Form.Item>
-      <Button type="primary" htmlType="submit" block>
-        今すぐ登録
-      </Button>
-    </Form.Item>
-  </Form>
-);
+//     <Form.Item>
+//       <Button type="primary" htmlType="submit" block>
+//         今すぐ登録
+//       </Button>
+//     </Form.Item>
+//   </Form>
+// );
 
-// パスワード再設定コンポーネント
-const ForgotPasswordForm = () => (
-  <Form>
-    <Form.Item name="email" rules={[{ type: 'email', required: true,message:"メールアドレスを入力してください。" }]}>
-      <Input prefix={<MailOutlined />} placeholder="登録メールアドレス" />
-    </Form.Item>
+// // パスワード再設定コンポーネント
+// const ForgotPasswordForm = () => (
+//   <Form>
+//     <Form.Item name="email" rules={[{ type: 'email', required: true,message:"メールアドレスを入力してください。" }]}>
+//       <Input prefix={<MailOutlined />} placeholder="登録メールアドレス" />
+//     </Form.Item>
 
-    <Form.Item>
-      <Space.Compact style={{width:"100%"}}>
-        <Input style={{ width: '60%' }} placeholder="確認コード" />
-        <Button style={{ width: '40%' }}>確認コードを送信</Button>
-      </Space.Compact>
-    </Form.Item>
+//     <Form.Item>
+//       <Space.Compact style={{width:"100%"}}>
+//         <Input style={{ width: '60%' }} placeholder="確認コード" />
+//         <Button style={{ width: '40%' }}>確認コードを送信</Button>
+//       </Space.Compact>
+//     </Form.Item>
 
-    <Form.Item>
-      <Button type="primary" htmlType="submit" block>
-        パスワードをリセット
-      </Button>
-    </Form.Item>
-  </Form>
-);
+//     <Form.Item>
+//       <Button type="primary" htmlType="submit" block>
+//         パスワードをリセット
+//       </Button>
+//     </Form.Item>
+//   </Form>
+// );
 
 export default AuthPage;

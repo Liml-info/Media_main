@@ -1,0 +1,175 @@
+openapi: 3.0.0
+info:
+  title: 虚拟试穿图片生成前端API
+  description: 用户与后端交互生成虚拟试穿图片
+  version: 1.0.0
+servers:
+  - url: /
+tags:
+  - name: Tasks
+    description: 虚拟试穿图片生成任务管理
+  - name: Results
+    description: 生成结果管理
+  - name: History
+    description: 任务历史记录
+paths:
+  /create-virtual-try-on-image:
+    post:
+      tags: [Tasks]
+      summary: 发起虚拟试穿图片生成请求
+      description: 用户输入参数，调用后端生成虚拟试穿图片
+      security:
+        - JwtAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                model_name:
+                  type: string
+                  description: 模型名称，如具体API中定义的相关模型名称
+                base_image:
+                  type: string
+                  description: 基础图片（穿着原始服装的人物图片），支持Base64编码或图片URL，Base64编码时无前缀
+                clothing_image:
+                  type: string
+                  description: 要试穿的服装图片，支持Base64编码或图片URL，Base64编码时无前缀
+                callback_url:
+                  type: string
+                  description: 本次任务结果回调通知地址，可选
+      responses:
+        200:
+          description: 成功提交请求
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: 错误码，0表示成功
+                  message:
+                    type: string
+                    description: 错误信息
+                  request_id:
+                    type: string
+                    description: 请求ID，系统生成，用于跟踪请求、排查问题
+                  data:
+                    type: object
+                    properties:
+                      task_id:
+                        type: string
+                        description: 任务ID，系统生成
+        400:
+          description: 参数填写错误
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: 错误码
+                  message:
+                    type: string
+                    description: 错误信息
+  /create-virtual-try-on-image/{task_id}/result:
+    get:
+      tags: [Results]
+      summary: 查询任务状态
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - JwtAuth: []
+      responses:
+        '200':
+          description: 当前任务状态
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStatusResponse'
+        '404':
+          description: 任务不存在
+  /create-virtual-try-on-image/history:
+    get:
+      tags: [History]
+      summary: 获取任务历史
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      security:
+        - JwtAuth: []
+      responses:
+        '200':
+          description: 历史记录列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskHistoryItem'
+components:
+  schemas:
+    TaskStatusResponse:
+      description: 虚拟试穿图片生成任务的状态模式
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [uploading, preprocessing, rendering, postprocessing, completed]
+        current_stage_progress:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+        debug_info:
+          type: object
+          properties:
+            render_frames:
+              type: integer
+            gpu_utilization:
+              type: number
+    TaskHistoryItem:
+      type: object
+      properties:
+        task_id:
+          type: string
+        status:
+          type: string  
+        created_at:
+          type: string
+          format: date-time
+        # 新增虚拟试穿请求参数
+        model_name:
+          type: string
+          description: 模型名称
+        base_image:
+          type: string
+          description: 基础图片（穿着原始服装的人物图片），支持Base64编码或图片URL，Base64编码时无前缀
+        clothing_image:
+          type: string
+          description: 要试穿的服装图片，支持Base64编码或图片URL，Base64编码时无前缀
+        # 新增虚拟试穿结果
+        image_url:
+          type: string
+          description: 虚拟试穿结果图片的URL
+  securitySchemes:
+    JwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "使用 JWT 进行身份验证，需要在请求头中添加 `Authorization: Bearer <token>`"

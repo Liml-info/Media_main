@@ -3,8 +3,10 @@ import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 import { HistoryContext } from '@/contexts/HistoryContext';
 import { Flex, Space } from 'antd';
+import { RootState } from '@/store';
+import { useSelector } from 'react-redux';
 
-interface MediaItem {
+export interface MediaItem {
   id: string;
   taskType: 'virtualTryOn' | 'imageGeneration' | 'image2Video' | 'text2Video';
   type: 'image' | 'video';
@@ -13,7 +15,7 @@ interface MediaItem {
 }
 
 const MediaViewer: React.FC = () => {
-  const { state } = useContext(HistoryContext);
+  const state = useSelector((rootState: RootState) => rootState.history);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const leftContainerRef = useRef<HTMLDivElement>(null);
   const rightContainerRef = useRef<HTMLDivElement>(null);

@@ -6,12 +6,12 @@ import { HomeOutlined, FolderOutlined, PictureOutlined, PlaySquareOutlined, Prod
 type MenuItem = Required<MenuProps>['items'][number];
 const items: MenuItem[] = [
   {
-    key: '/',
+    key: '/main',
     icon: <HomeOutlined />,
     label: 'トップページ',
   },
   {
-    key: '/assets',
+    key: '/main/assets',
     icon: <FolderOutlined />,
     label: '資産管理',
   },
@@ -34,11 +34,6 @@ const items: MenuItem[] = [
         key: '/tools/try-on',
         icon: <AliwangwangOutlined />,
         label: 'バーチャル試着',
-      },
-      {
-        key: '/toolbox',
-        icon: <ProductOutlined />,
-        label: '全てツール',
       },
     ]
   },
