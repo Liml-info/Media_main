@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Tabs, Form, Input, Button, Checkbox, Space } from 'antd';
+import { Tabs, Form, Input, Button, Checkbox, Space, Flex } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { createStyles,keyframes } from 'antd-style';
 import type { TabsProps } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { fetchHistory } from '@/services/getHistory';
+import logoUrl from '@/assets/images/logo.png';
 
 const useStyles = createStyles(({ }) => {
   
@@ -47,7 +48,8 @@ const useStyles = createStyles(({ }) => {
   backdropFilter: "blur(12px)",
   borderRadius: "16px",
   border: "1px solid rgba(255,255,255,0.1)",
-  boxShadow: "0 0 40px rgba(0,255,136,0.15)"
+  boxShadow: "0 0 40px rgba(0,255,136,0.15)",
+  width: "400px",
   }
 }
 });
@@ -79,6 +81,13 @@ const AuthPage = () => {
       <div className="gradient-layer"></div>
       
       <div className={styles.container}>
+        <Flex style={{justifyContent:"center"}}>
+        <img
+              src={logoUrl}
+              alt="Company Logo"
+              style={{  height: "80px", padding: "10px" }}
+            />
+        </Flex>
       <LoginForm />
         {/* <Tabs 
           activeKey={activeKey}
@@ -109,14 +118,14 @@ return (
   onFinish={onFinish}
   >
     <Form.Item name="username" rules={[{ required: true,message:"メールアドレスを入力してください。" }]}>
-      <Input prefix={<UserOutlined />} placeholder="メールアドレス" />
+      <Input style={{height:"40px",borderRadius:"20px"}} prefix={<UserOutlined />} placeholder="メールアドレス" />
     </Form.Item>
     
     <Form.Item name="password" rules={[{ required: true,message:"パスワードを入力してください。"}]}>
-      <Input.Password prefix={<LockOutlined />} placeholder="パスワード" />
+      <Input.Password style={{height:"40px",borderRadius:"20px"}} prefix={<LockOutlined />} placeholder="パスワード" />
     </Form.Item>
     <Form.Item>
-      <Button type="primary" htmlType="submit" block>
+      <Button style={{height:"40px",borderRadius:"20px"}} type="primary" htmlType="submit" block>
         ログイン
       </Button>
       {/* <div style={{ marginTop: 16 }}>

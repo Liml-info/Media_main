@@ -1,9 +1,9 @@
 import { ControlOutlined } from "@ant-design/icons";
-import { Button, Flex, Popover, Select, Slider, Space, Typography } from "antd";
+import { Button, Flex, message, Popover, Radio, Select, Slider, Space, Tabs, Typography } from "antd";
 import { useContext, useMemo } from "react";
 import ImgUpload from "./components/ImgUpload";
 import TextArea from "antd/es/input/TextArea";
-import { VideoContext } from "@/contexts/VideoContext";
+import { AspectRatio, Duration, InputImageType, inputType, Mode, ModelName, VideoContext } from "@/contexts/VideoContext";
 import type { TabsProps } from 'antd';
 const { Title, Text } = Typography;
 
@@ -11,14 +11,12 @@ const { Title, Text } = Typography;
 
 const Types: TabsProps['items'] = [
   {
-    key: '1',
+    key: 'text',
     label: '文生ビデオ',
-    children: 'Content of Tab Pane 1',
   },
   {
-    key: '2',
+    key: 'image',
     label: '図生ビデオ',
-    children: 'Content of Tab Pane 2',
   }
 ];
 
@@ -27,7 +25,30 @@ const Types: TabsProps['items'] = [
 
 const App: React.FC = () => {
   const { state, dispatch } = useContext(VideoContext);
+  const { model_name,input_type, input_image_type } = state;
+  const isTextInput = input_type === "text";
+  const isAspectRatioShow = input_type === "text" || (input_type === "image" && input_image_type === "mulitple");
 
+  const model_name_options = useMemo(() => {
+    if(input_type == "text"){
+      return[
+        { value: 'kling-v2-master', label: 'モードv2.0' },
+        { value: 'kling-v1-6', label: 'モードv1.6' },
+        { value: 'kling-v1', label: 'モードv1.0' },
+      ];
+    }else if(input_type == "image" && input_image_type == "mulitple"){
+      return [
+        { value: 'kling-v1-6', label: 'モードv1.6' },
+      ];
+    }else{
+      return [
+        { value: 'kling-v2-master', label: 'モードv2.0' },
+        { value: 'kling-v1-6', label: 'モードv1.6' },
+        { value: 'kling-v1-5', label: 'モードv1.5' },
+        { value: 'kling-v1', label: 'モードv1.0' },
+      ]
+    }
+  }, [input_type,input_image_type]);
   /**
    * 生成自由度のスライダー
    */
@@ -63,31 +84,61 @@ const App: React.FC = () => {
           <Title level={4}>ビデオ生成</Title>
           <Select
             defaultValue="kling-v1-6"
-            value={state.model_name}
+            value={model_name}
             style={{ width: 150 }}
             onChange={(value) => {
-              dispatch({ type: "SET_MODEL", payload: value });
+              dispatch({ type: "SET_MODELNAME", payload: value as ModelName });
             }}
-            options={[
-              { value: 'kling-v1-6', label: 'モードv1.6' },
-              { value: 'kling-v1-5', label: 'モードv1.5' },
-              { value: 'kling-v1', label: 'モードv1.0' },
-            ]}
+            options={model_name_options}
           />
         </Space>
       </Flex>
       <Flex vertical style={{ padding: "0px 20px", flexGrow: 1, overflow: "auto", scrollbarWidth: "none" }}>
-        <Flex vertical style={{ margin: "10px 0px" }}>
-          <Space style={{ marginBottom: "10px" }}>
-            <Text>開始・終了フレーム（必須）</Text>
-          </Space>
-          <Flex vertical>
-            <ImgUpload></ImgUpload>
-          </Flex>
+        <Flex>
+          <Tabs activeKey={input_type} style={{ width: "100%" }} items={Types} onChange={(key: string) => {
+            if (key === "text" && model_name == "kling-v1-5") {
+              dispatch({ type: "SET_MODELNAME", payload: "kling-v1-6" });
+              message.info("モードをV1.6に変更しました。");
+            }else if(key === "image" && input_image_type == "mulitple" && model_name != "kling-v1-6"){
+              dispatch({ type: "SET_MODELNAME", payload: "kling-v1-6" });
+              message.info("モードをV1.6に変更しました。");
+            }
+            dispatch({ type: "SET_INPUT_TYPE", payload: key as inputType });
+          }} />
         </Flex>
+        {
+          isTextInput ? undefined :
+
+            <Flex>
+              <Radio.Group value={input_image_type} onChange={
+                (e) => {
+                  if (e.target.value === "mulitple" && model_name != "kling-v1-6") {
+                    dispatch({ type: "SET_MODELNAME", payload: "kling-v1-6" });
+                    message.info("モードをV1.6に変更しました。");
+                  }
+                  dispatch({ type: "SET_INPUT_IMAGE_TYPE", payload: e.target.value as InputImageType });
+                }
+              } style={{ marginBottom: 16 }}>
+                <Radio.Button value="firstend">開始・終了フレーム</Radio.Button>
+                <Radio.Button value="mulitple">　複数画像参考　　</Radio.Button>
+              </Radio.Group>
+            </Flex>
+        }
+        {
+          isTextInput ? undefined :
+
+            <Flex vertical style={{ margin: "10px 0px" }}>
+              <Space style={{ marginBottom: "10px" }}>
+                <Text>開始・終了フレーム（必須）</Text>
+              </Space>
+              <Flex vertical>
+                <ImgUpload></ImgUpload>
+              </Flex>
+            </Flex>
+        }
         <Flex vertical style={{ marginBottom: "10px" }}>
           <Space style={{ marginBottom: "10px" }}>
-            <Text>画像のアイデアの説明（オプション）</Text>
+            <Text>{isTextInput ? "クリエイティブな説明" : "クリエイティブな説明（オプション）"}</Text>
           </Space>
           <Flex>
             <TextArea
@@ -124,7 +175,7 @@ const App: React.FC = () => {
           value={state.mode}
           style={{ width: 150 }}
           onChange={(value) => {
-            dispatch({ type: "SET_QUALITY", payload: value });
+            dispatch({ type: "SET_MODEL", payload: value as Mode });
           }}
           options={[
             { value: 'std', label: '標準モード' },
@@ -135,12 +186,27 @@ const App: React.FC = () => {
           defaultValue="5"
           style={{ width: 80 }}
           value={state.duration}
-          onChange={(value) => { dispatch({ type: "SET_DURATION", payload: value }); }}
+          onChange={(value) => { dispatch({ type: "SET_DURATION", payload: value as Duration }); }}
           options={[
             { value: '5', label: '5s' },
             { value: '10', label: '10s' }
           ]}
         />
+        {
+          isAspectRatioShow ?
+            <Select
+              defaultValue="5"
+              style={{ width: 80 }}
+              value={state.aspect_ratio}
+              onChange={(value) => { dispatch({ type: "SET_ASPECT_RATIO", payload: value as AspectRatio }); }}
+              options={[
+                { value: '16:9', label: '16:9' },
+                { value: '9:16', label: '9:16' },
+                { value: '1:1', label: '1:1' },
+              ]}
+            /> :
+            undefined
+        }
         <Popover placement="topLeft" content={cfg_scale_content}>
           <Button type="primary" icon={<ControlOutlined />} iconPosition={"end"}>
             生成自由度:{state.cfg_scale}
@@ -148,7 +214,7 @@ const App: React.FC = () => {
         </Popover>
       </Space>
       <Flex style={{ alignItems: "center", padding: "0px 20px", height: "65px", justifyContent: "flex-end" }}>
-        <Button type="primary" onClick={()=>{
+        <Button type="primary" onClick={() => {
           console.log(JSON.stringify(state));
         }}>生成する</Button>
       </Flex>

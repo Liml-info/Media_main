@@ -4,6 +4,7 @@ import type { MenuProps } from 'antd';
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { HomeOutlined, FolderOutlined, PictureOutlined, PlaySquareOutlined, ProductOutlined, AliwangwangOutlined } from '@ant-design/icons';
 type MenuItem = Required<MenuProps>['items'][number];
+import logoUrl from '@/assets/images/logo.png';
 const items: MenuItem[] = [
   {
     key: '/main',
@@ -64,9 +65,9 @@ const MainLayout: React.FC = () => {
         <Flex vertical style={{ alignItems:"center" }}>
         <Link to="/">
             <img
-              src="/src/assets/react.svg"
+              src={logoUrl}
               alt="Company Logo"
-              className="sider-logo"
+              style={{  height: "50px", padding: "10px" }}
             />
           </Link>
         </Flex>
