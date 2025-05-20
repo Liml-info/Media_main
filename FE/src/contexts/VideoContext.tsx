@@ -47,7 +47,12 @@ const initialState: State = {
   image_tail:'',
   aspect_ratio:'16:9',
   input_image_type:'firstend',
-  image_list:[]
+  image_list:[
+    {image:""},
+    {image:""},
+    {image:""},
+    {image:""}
+  ]
 };
 
 const reducer = (state: State, action: Action): State => {

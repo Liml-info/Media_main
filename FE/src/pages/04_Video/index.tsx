@@ -5,6 +5,8 @@ import ImgUpload from "./components/ImgUpload";
 import TextArea from "antd/es/input/TextArea";
 import { AspectRatio, Duration, InputImageType, inputType, Mode, ModelName, VideoContext } from "@/contexts/VideoContext";
 import type { TabsProps } from 'antd';
+import MultiImgUpload from "./components/MultiImgUpload";
+import SimpleBar from "simplebar-react";
 const { Title, Text } = Typography;
 
 
@@ -25,22 +27,22 @@ const Types: TabsProps['items'] = [
 
 const App: React.FC = () => {
   const { state, dispatch } = useContext(VideoContext);
-  const { model_name,input_type, input_image_type } = state;
+  const { model_name, input_type, input_image_type } = state;
   const isTextInput = input_type === "text";
   const isAspectRatioShow = input_type === "text" || (input_type === "image" && input_image_type === "mulitple");
 
   const model_name_options = useMemo(() => {
-    if(input_type == "text"){
-      return[
+    if (input_type == "text") {
+      return [
         { value: 'kling-v2-master', label: 'モードv2.0' },
         { value: 'kling-v1-6', label: 'モードv1.6' },
         { value: 'kling-v1', label: 'モードv1.0' },
       ];
-    }else if(input_type == "image" && input_image_type == "mulitple"){
+    } else if (input_type == "image" && input_image_type == "mulitple") {
       return [
         { value: 'kling-v1-6', label: 'モードv1.6' },
       ];
-    }else{
+    } else {
       return [
         { value: 'kling-v2-master', label: 'モードv2.0' },
         { value: 'kling-v1-6', label: 'モードv1.6' },
@@ -48,7 +50,7 @@ const App: React.FC = () => {
         { value: 'kling-v1', label: 'モードv1.0' },
       ]
     }
-  }, [input_type,input_image_type]);
+  }, [input_type, input_image_type]);
   /**
    * 生成自由度のスライダー
    */
@@ -79,7 +81,7 @@ const App: React.FC = () => {
 
   return (
     <Flex vertical style={{ height: "100%" }}>
-      <Flex style={{ padding: "0px 20px", height: "65px", borderBottom: "1px solid", alignItems: "center" }}>
+      <Flex style={{ padding: "0px 20px", height: "65px", borderBottom: "1px solid", alignItems: "center",flexShrink:0 }}>
         <Space>
           <Title level={4}>ビデオ生成</Title>
           <Select
@@ -93,81 +95,92 @@ const App: React.FC = () => {
           />
         </Space>
       </Flex>
-      <Flex vertical style={{ padding: "0px 20px", flexGrow: 1, overflow: "auto", scrollbarWidth: "none" }}>
-        <Flex>
-          <Tabs activeKey={input_type} style={{ width: "100%" }} items={Types} onChange={(key: string) => {
-            if (key === "text" && model_name == "kling-v1-5") {
-              dispatch({ type: "SET_MODELNAME", payload: "kling-v1-6" });
-              message.info("モードをV1.6に変更しました。");
-            }else if(key === "image" && input_image_type == "mulitple" && model_name != "kling-v1-6"){
-              dispatch({ type: "SET_MODELNAME", payload: "kling-v1-6" });
-              message.info("モードをV1.6に変更しました。");
-            }
-            dispatch({ type: "SET_INPUT_TYPE", payload: key as inputType });
-          }} />
-        </Flex>
-        {
-          isTextInput ? undefined :
+      <Flex vertical style={{ padding: "0px 20px", flexGrow: 1, overflow: "hidden" }}>
+        <SimpleBar style={{height:"100%"}}>
+          <Flex>
+            <Tabs activeKey={input_type} style={{ width: "100%" }} items={Types} onChange={(key: string) => {
+              if (key === "text" && model_name == "kling-v1-5") {
+                dispatch({ type: "SET_MODELNAME", payload: "kling-v1-6" });
+                message.info("モードをV1.6に変更しました。");
+              } else if (key === "image" && input_image_type == "mulitple" && model_name != "kling-v1-6") {
+                dispatch({ type: "SET_MODELNAME", payload: "kling-v1-6" });
+                message.info("モードをV1.6に変更しました。");
+              }
+              dispatch({ type: "SET_INPUT_TYPE", payload: key as inputType });
+            }} />
+          </Flex>
+          {
+            isTextInput ? undefined :
 
-            <Flex>
-              <Radio.Group value={input_image_type} onChange={
-                (e) => {
-                  if (e.target.value === "mulitple" && model_name != "kling-v1-6") {
-                    dispatch({ type: "SET_MODELNAME", payload: "kling-v1-6" });
-                    message.info("モードをV1.6に変更しました。");
+              <Flex>
+                <Radio.Group value={input_image_type} onChange={
+                  (e) => {
+                    if (e.target.value === "mulitple" && model_name != "kling-v1-6") {
+                      dispatch({ type: "SET_MODELNAME", payload: "kling-v1-6" });
+                      message.info("モードをV1.6に変更しました。");
+                    }
+                    dispatch({ type: "SET_INPUT_IMAGE_TYPE", payload: e.target.value as InputImageType });
                   }
-                  dispatch({ type: "SET_INPUT_IMAGE_TYPE", payload: e.target.value as InputImageType });
-                }
-              } style={{ marginBottom: 16 }}>
-                <Radio.Button value="firstend">開始・終了フレーム</Radio.Button>
-                <Radio.Button value="mulitple">　複数画像参考　　</Radio.Button>
-              </Radio.Group>
-            </Flex>
-        }
-        {
-          isTextInput ? undefined :
-
-            <Flex vertical style={{ margin: "10px 0px" }}>
-              <Space style={{ marginBottom: "10px" }}>
-                <Text>開始・終了フレーム（必須）</Text>
-              </Space>
-              <Flex vertical>
-                <ImgUpload></ImgUpload>
+                } style={{ marginBottom: 16 }}>
+                  <Radio.Button value="firstend">開始・終了フレーム</Radio.Button>
+                  <Radio.Button value="mulitple">　複数画像参考　　</Radio.Button>
+                </Radio.Group>
               </Flex>
+          }
+          {
+            isTextInput ? undefined :
+
+              <Flex vertical style={{ margin: "10px 0px" }}>
+
+                {
+                  input_image_type == "firstend" ?
+                    <>
+
+                      <Space style={{ marginBottom: "10px" }}>
+                        <Text>開始・終了フレーム（必須）</Text>
+                      </Space>
+                      <Flex vertical>
+                        <ImgUpload></ImgUpload>
+                      </Flex>
+                    </>
+                    :
+                    <MultiImgUpload></MultiImgUpload>
+                }
+              </Flex>
+          }
+          <Flex vertical style={{ marginBottom: "10px" }}>
+            <Space style={{ marginBottom: "10px" }}>
+              <Text>{isTextInput ? "クリエイティブな説明" : "クリエイティブな説明（オプション）"}</Text>
+            </Space>
+            <Flex>
+              <TextArea
+                style={{ width: "100%" }}
+                value={state.prompt}
+                onChange={(e) => {
+                  dispatch({ type: "SET_PROMPT", payload: e.target.value });
+                }}
+                placeholder="生成したいビデオの内容について説明してください"
+                maxLength={2500}
+                autoSize={{ minRows: 3, maxRows: 5 }}></TextArea>
             </Flex>
-        }
-        <Flex vertical style={{ marginBottom: "10px" }}>
-          <Space style={{ marginBottom: "10px" }}>
-            <Text>{isTextInput ? "クリエイティブな説明" : "クリエイティブな説明（オプション）"}</Text>
-          </Space>
-          <Flex>
-            <TextArea
-              style={{ width: "100%" }}
-              value={state.prompt}
-              onChange={(e) => {
-                dispatch({ type: "SET_PROMPT", payload: e.target.value });
-              }}
-              placeholder="生成したいビデオの内容について説明してください"
-              maxLength={2500}
-              autoSize={{ minRows: 3, maxRows: 5 }}></TextArea>
           </Flex>
-        </Flex>
-        <Flex vertical style={{ marginBottom: "10px" }}>
-          <Space style={{ marginBottom: "10px" }}>
-            <Text>表示したくないコンテンツ（オプション）</Text>
-          </Space>
-          <Flex>
-            <TextArea
-              style={{ width: "100%" }}
-              value={state.negative_prompt}
-              onChange={(e) => {
-                dispatch({ type: "SET_NEGATIVE_PROMPT", payload: e.target.value });
-              }}
-              placeholder="ビデオに表示したくない内容を入力してください。例：アニメーション、ファジィ表現、変形加工、破壊表現、低品質素材、コラージュ..."
-              maxLength={2500}
-              autoSize={{ minRows: 3, maxRows: 5 }}></TextArea>
+          <Flex vertical style={{ marginBottom: "10px" }}>
+            <Space style={{ marginBottom: "10px" }}>
+              <Text>表示したくないコンテンツ（オプション）</Text>
+            </Space>
+            <Flex>
+              <TextArea
+                style={{ width: "100%" }}
+                value={state.negative_prompt}
+                onChange={(e) => {
+                  dispatch({ type: "SET_NEGATIVE_PROMPT", payload: e.target.value });
+                }}
+                placeholder="ビデオに表示したくない内容を入力してください。例：アニメーション、ファジィ表現、変形加工、破壊表現、低品質素材、コラージュ..."
+                maxLength={2500}
+                autoSize={{ minRows: 3, maxRows: 5 }}></TextArea>
+            </Flex>
           </Flex>
-        </Flex>
+        </SimpleBar>
       </Flex>
       <Space style={{ padding: "0px 20px", }}>
         <Select
@@ -213,7 +226,7 @@ const App: React.FC = () => {
           </Button>
         </Popover>
       </Space>
-      <Flex style={{ alignItems: "center", padding: "0px 20px", height: "65px", justifyContent: "flex-end" }}>
+      <Flex style={{ alignItems: "center", padding: "0px 20px", height: "65px", justifyContent: "flex-end",flexShrink:0 }}>
         <Button type="primary" onClick={() => {
           console.log(JSON.stringify(state));
         }}>生成する</Button>

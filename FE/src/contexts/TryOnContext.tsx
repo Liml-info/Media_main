@@ -5,18 +5,18 @@ export type ModelType = 'kolors-virtual-try-on-v1' | 'kolors-virtual-try-on-v1-5
 type State = {
   model_name: ModelType;
   human_image:string;
-  cloth_image:string;
+  clothes_image:string;
 };
 
 type Action =
   | { type: 'SET_MODEL'; payload: ModelType }
   | { type: 'SET_HUMAN_IMAGE'; payload: string }
-  | { type: 'SET_CLOTH_IMAGE'; payload: string };
+  | { type: 'SET_CLOTHES_IMAGE'; payload: string };
 
 const initialState: State = {
   model_name: 'kolors-virtual-try-on-v1-5',
   human_image:'',
-  cloth_image:'',
+  clothes_image:'',
 };
 
 const reducer = (state: State, action: Action): State => {
@@ -25,8 +25,8 @@ const reducer = (state: State, action: Action): State => {
       return { ...state, model_name: action.payload };
     case 'SET_HUMAN_IMAGE':
       return {...state, human_image: action.payload };
-    case 'SET_CLOTH_IMAGE':
-      return {...state, cloth_image: action.payload };
+    case 'SET_CLOTHES_IMAGE':
+      return {...state, clothes_image: action.payload };
     default:
       return state;
   }

@@ -4,6 +4,7 @@ import TextArea from "antd/es/input/TextArea";
 import { useContext, useMemo } from "react";
 import ImgUpload from "./components/ImgUpload";
 import RefrenceImage from "./components/ImgUpload";
+import SimpleBar from "simplebar-react";
 const { Title, Text } = Typography;
 
 const App: React.FC = () => {
@@ -36,9 +37,9 @@ const aspect_ratio_options = useMemo(() => {
 
   return (
     <Flex vertical style={{ height: "100%" }}>
-      <Flex style={{ padding: "0px 20px", height: "65px", borderBottom: "1px solid", alignItems: "center" }}>
+      <Flex style={{ padding: "0px 20px", height: "65px", borderBottom: "1px solid", alignItems: "center",flexShrink:0 }}>
         <Space>
-          <Title level={4}>ビデオ生成</Title>
+          <Title level={4}>画像生成</Title>
           <Select
             defaultValue="kling-v1-5"
             value={state.model_name}
@@ -53,7 +54,9 @@ const aspect_ratio_options = useMemo(() => {
           />
         </Space>
       </Flex>
-      <Flex vertical style={{ padding: "0px 20px", flexGrow: 1, overflow: "auto", scrollbarWidth: "none" }}>
+      <Flex vertical style={{ padding: "0px 20px", flexGrow: 1, overflow: "hidden" }}>
+        <SimpleBar style={{height:"100%"}}>
+
         <Flex vertical style={{ margin: "10px 0px" }}>
           <Space style={{ marginBottom: "10px" }}>
             <Text>クリエイティブ・ディスクリプション（必須）</Text>
@@ -94,6 +97,7 @@ const aspect_ratio_options = useMemo(() => {
               autoSize={{ minRows: 3, maxRows: 5 }}></TextArea>
           </Flex>
         </Flex>
+        </SimpleBar>
       </Flex>
       <Space style={{ padding: "0px 20px", }}>
         <Select
@@ -123,7 +127,7 @@ const aspect_ratio_options = useMemo(() => {
           ]}
         />
       </Space>
-      <Flex style={{ alignItems: "center", padding: "0px 20px", height: "65px", justifyContent: "flex-end" }}>
+      <Flex style={{ alignItems: "center", padding: "0px 20px", height: "65px", justifyContent: "flex-end",flexShrink:0  }}>
         <Button type="primary" onClick={()=>{
           console.log(JSON.stringify(state));
         }}>生成する</Button>

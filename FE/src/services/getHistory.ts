@@ -1,6 +1,7 @@
 import { fetchError,clearHistory, fetchStart, fetchSuccessImage2Video, fetchSuccessImageGeneration, fetchSuccessText2Video, fetchSuccessVirtualTryOn } from "@/store/slices/historySlice";
 import axios from "axios";
 import { store } from "@/store";
+const tmpHost = "http://localhost:3006";
 
 export const fetchHistory = async () => {
     const { dispatch } = store;
@@ -9,7 +10,7 @@ export const fetchHistory = async () => {
       dispatch(clearHistory());
       // 虚拟试穿历史记录
       dispatch(fetchStart());
-      const tryOnResponse = await axios.get('http://localhost:3006/create-virtual-try-on-image/history');
+      const tryOnResponse = await axios.get(`${tmpHost}/create-virtual-try-on-image/history`);
       dispatch(fetchSuccessVirtualTryOn(
         tryOnResponse.data.map((item: any) => ({ 
           id: item.task_id,
@@ -19,7 +20,7 @@ export const fetchHistory = async () => {
       ));
 
       // 图像生成历史记录
-      const imageResponse = await axios.get('http://localhost:3006/create-image/history');
+      const imageResponse = await axios.get(`${tmpHost}/create-image/history`);
       dispatch(fetchSuccessImageGeneration(
         imageResponse.data.map((item: any) => ({
           id: item.task_id,
@@ -31,7 +32,7 @@ export const fetchHistory = async () => {
       ));
 
       // 图片转视频历史记录
-      const image2VideoResponse = await axios.get('http://localhost:3006/image2video/history');
+      const image2VideoResponse = await axios.get(`${tmpHost}/image2video/history`);
       dispatch(fetchSuccessImage2Video(
         image2VideoResponse.data.map((item: any) => ({
           id: item.task_id,
@@ -43,7 +44,7 @@ export const fetchHistory = async () => {
       ));
 
       // 文本转视频历史记录
-      const text2VideoResponse = await axios.get('http://localhost:3006/text2video/history');
+      const text2VideoResponse = await axios.get(`${tmpHost}/text2video/history`);
       dispatch(fetchSuccessText2Video(
         text2VideoResponse.data.map((item: any) => ({
           id: item.task_id,

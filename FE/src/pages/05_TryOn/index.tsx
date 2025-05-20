@@ -2,15 +2,16 @@ import { Button, Flex, Select, Space, Typography } from "antd";
 import { useContext } from "react";
 import { ModelType, TryOnContext } from "@/contexts/TryOnContext";
 import ImgUpload from "./components/ImgUpload";
+import SimpleBar from "simplebar-react";
 const { Title, Text } = Typography;
 
 const App: React.FC = () => {
   const { state, dispatch } = useContext(TryOnContext);
   return (
     <Flex vertical style={{ height: "100%" }}>
-      <Flex style={{ padding: "0px 20px", height: "65px", borderBottom: "1px solid", alignItems: "center" }}>
+      <Flex style={{ padding: "0px 20px", height: "65px", borderBottom: "1px solid", alignItems: "center" , flexShrink: 0}}>
         <Space>
-          <Title level={4}>ビデオ生成</Title>
+          <Title level={4}>バーチャル試着</Title>
           <Select
             defaultValue="kling-v1-6"
             value={state.model_name}
@@ -25,26 +26,29 @@ const App: React.FC = () => {
           />
         </Space>
       </Flex>
-      <Flex vertical style={{ padding: "0px 20px", flexGrow: 1, overflow: "auto", scrollbarWidth: "none" }}>
-      <Flex vertical style={{ margin: "10px 0px" }}>
-          <Space style={{ marginBottom: "10px" }}>
-            <Text>人物モデル</Text>
-          </Space>
-          <Flex vertical>
-            <ImgUpload></ImgUpload>
+      <Flex vertical style={{ padding: "0px 20px", flexGrow: 1, overflow: "hidden" }}>
+        <SimpleBar style={{ height: "100%" }}>
+
+          <Flex vertical style={{ margin: "10px 0px" }}>
+            <Space style={{ marginBottom: "10px" }}>
+              <Text>人物モデル</Text>
+            </Space>
+            <Flex vertical>
+              <ImgUpload type="human"></ImgUpload>
+            </Flex>
           </Flex>
-        </Flex>
-        <Flex vertical style={{ margin: "10px 0px" }}>
-          <Space style={{ marginBottom: "10px" }}>
-            <Text>アパレル</Text>
-          </Space>
-          <Flex vertical>
-            <ImgUpload></ImgUpload>
+          <Flex vertical style={{ margin: "10px 0px" }}>
+            <Space style={{ marginBottom: "10px" }}>
+              <Text>アパレル</Text>
+            </Space>
+            <Flex vertical>
+              <ImgUpload type="clothes"></ImgUpload>
+            </Flex>
           </Flex>
-        </Flex>
+        </SimpleBar>
       </Flex>
-      <Flex style={{ alignItems: "center", padding: "0px 20px", height: "65px", justifyContent: "flex-end" }}>
-        <Button type="primary" onClick={()=>{
+      <Flex style={{ alignItems: "center", padding: "0px 20px", height: "65px", justifyContent: "flex-end" , flexShrink: 0 }}>
+        <Button type="primary" onClick={() => {
           console.log(JSON.stringify(state));
         }}>生成する</Button>
       </Flex>

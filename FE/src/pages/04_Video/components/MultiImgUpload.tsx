@@ -1,41 +1,55 @@
 import React, { useContext } from 'react';
-import { DeleteOutlined, InboxOutlined, UploadOutlined } from '@ant-design/icons';
+import { DeleteOutlined, InboxOutlined, PlusSquareOutlined, SwapOutlined, UploadOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import { Avatar, Flex, message, Space, Tooltip, Upload } from 'antd';
 import { RcFile } from 'antd/es/upload';
 import { VideoContext } from '@/contexts/VideoContext';
-import { createStyles } from 'antd-style';
-import { TryOnContext } from '@/contexts/TryOnContext';
 
 const { Dragger } = Upload;
-interface ImgUploadProps {
-  type: "human" | "clothes"
-}
-const ImgUpload: React.FC<ImgUploadProps>= (props) => {
-  const { type } = props;
-  const { state, dispatch } = useContext(TryOnContext);
-  const changeImage = (imageUrl: string) => {
-    if (type == "human") {
-      dispatch({ type: "SET_HUMAN_IMAGE", payload: imageUrl });
-    } else {
-      dispatch({ type: "SET_CLOTHES_IMAGE", payload: imageUrl });
-    }
-  } 
-  const ShowHeader = () => {
-    const imgData = type == "human" ? state.human_image : state.clothes_image;
-    if (imgData) {
-      return <ShowImages src={imgData} changeImage={changeImage}></ShowImages>;
-    }
-    return <DraggerComponent changeImage={changeImage}></DraggerComponent>;
+
+const MultiImgUpload: React.FC = () => {
+  const { state, dispatch } = useContext(VideoContext);
+  const { image_list} = state;
+  const getChangeImageFunc = (index:number)=> (imageUrl: string) => {
+    const newImageList = [...state.image_list]; // 既存の画像リストをコピー
+    newImageList[index] = {
+      image: imageUrl, // 新しい画像を設定
+    };
+    console.log(newImageList);
+    
+    dispatch({ type: "SET_IMAGE_LIST", payload: newImageList }); // 画像リストを更新  
   }
   return (
-    <Flex vertical style={{ border: "1px solid #434343", borderRadius: "8px", padding: "8px" }}>
-      <Flex vertical style={{ flexGrow: 1, position: "relative", height: "180px", overflow: "hidden" }}>
-        <ShowHeader></ShowHeader>
-      </Flex>
+    <>
+    <p className="ant-upload-hint" style={{color:"gray"}}>
+          JPEG/PNG/JPG形式、10MB以下のファイルをアップロードできます
+    </p>
+    <Flex style={{ border: "1px solid #434343", flexWrap:"wrap", gap:10, borderRadius: "8px", padding: "8px" , height:"400px" }}>
+      {
+        image_list.map((item,index)=>{
+          return (
+            <Flex vertical style={{width:"calc(50% - 10px)" , height:"calc(50% - 10px)", position: "relative",}}>
+              <ShowHeader imageUrl={item.image}  imageIndex={index} changeImage={getChangeImageFunc(index)}></ShowHeader>
+            </Flex>
+          )
+        })
+      }
     </Flex>
+    </>
   );
 };
+
+const ShowHeader = (props:{
+  imageUrl: string,
+  imageIndex: number,
+  changeImage: (imageUrl: string) => void,
+}) => {
+  const {imageUrl,changeImage,imageIndex} = props;
+    if (imageUrl) {
+      return <ShowImages changeImage={changeImage} imageIndex={imageIndex} src={imageUrl} ></ShowImages>;
+    }
+    return <DraggerComponent changeImage={changeImage}></DraggerComponent>;
+} 
 
 
 const DraggerProps: UploadProps = {
@@ -45,8 +59,10 @@ const DraggerProps: UploadProps = {
   maxCount: 1,
   showUploadList: false,
 };
-const ShowImages = (props: { src: string, changeImage: (imageUrl: string) => void, }) => {
-  const { changeImage } = props;
+const ShowImages = (props: { src: string,
+  imageIndex: number,
+  changeImage: (imageUrl: string) => void,}) => {
+  const {changeImage} = props;
 
   const delImg = () => {
     changeImage("");
@@ -62,18 +78,20 @@ const ShowImages = (props: { src: string, changeImage: (imageUrl: string) => voi
     });
     return false;
   }
+  const markId = `mark_${props.imageIndex}`;
   return (
     <Flex
       onMouseEnter={() => {
-        const mark = document.getElementById("mark") as HTMLDivElement;
+        const mark = document.getElementById(markId) as HTMLDivElement;
         mark.style.display = "flex";
       }}
       onMouseLeave={() => {
-        const mark = document.getElementById("mark") as HTMLDivElement;
+        const mark = document.getElementById(markId) as HTMLDivElement;
         mark.style.display = "none";
       }}
-      style={{ justifyContent: "center", borderRadius: "8px", position: "relative", height: "100%" }}>
-      <Flex id="mark" style={
+      style={{ justifyContent: "center", borderRadius: "8px", position: "relative", height: "100%",
+        border:"1px solid white"}}>
+      <Flex id={markId} style={
         {
           position: "absolute",
           top: 0,
@@ -119,10 +137,8 @@ const ShowImages = (props: { src: string, changeImage: (imageUrl: string) => voi
 
 
 
-const DraggerComponent = (
-  props: { changeImage: (imageUrl: string) => void, }
-) => {
-  const { changeImage } = props;
+const DraggerComponent = (props: { changeImage: (imageUrl: string) => void }) => {
+  const {changeImage} = props;
   const beforeUpload = (file: RcFile) => {
     const checkResult = uploadFileCheck(file);
     if (!checkResult) {
@@ -140,9 +156,6 @@ const DraggerComponent = (
           <InboxOutlined />
         </p>
         <p className="ant-upload-text">クリックまたはファイルをここにドラッグ</p>
-        <p className="ant-upload-hint">
-          JPEG/PNG/JPG形式、10MB以下のファイルをアップロードできます
-        </p>
       </Flex>
     </Dragger>
   );
@@ -170,4 +183,4 @@ function fileToBase64(file: File) {
     reader.readAsDataURL(file);
   });
 }
-export default ImgUpload;
+export default MultiImgUpload;

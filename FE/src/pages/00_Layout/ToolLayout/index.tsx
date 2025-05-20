@@ -4,7 +4,6 @@ import type { MenuProps } from 'antd';
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { BarsOutlined, HomeOutlined, FolderOutlined, PictureOutlined, PlaySquareOutlined, ProductOutlined, AliwangwangOutlined } from '@ant-design/icons';
 import ToolRight from '@/pages/06_ToolRight';
-import { HistoryContext, HistoryProvider } from '@/contexts/HistoryContext';
 type MenuItem = Required<MenuProps>['items'][number];
 const items: MenuItem[] = [
   {
@@ -73,7 +72,7 @@ const ToolLayout: React.FC = () => {
           </Flex>
         </Flex>
       </Sider>
-      <Content>
+      <Content style={{height:"100vh"}}>
         <Splitter style={{ boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}>
           <Splitter.Panel defaultSize="30%" min="30%" max="40%">
             <Outlet />

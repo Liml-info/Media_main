@@ -9,12 +9,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { FaceImgAction, FaceImgContext, FaceImgProvider } from '../contexts/FaceImgContext';
 
 const { Dragger } = Upload;
-const useStyles = createStyles(({ token }) => ({
-  dynamicBtn: {
-    backgroundColor: token.colorPrimary,
-    '&:hover': { opacity: 0.8 }
-  },
-}));
 const RefrenceImage: React.FC = () => {
   return (
     <FaceImgProvider>
@@ -25,15 +19,13 @@ const RefrenceImage: React.FC = () => {
 
 const ImgUpload: React.FC = () => {
   const { state, dispatch } = useContext(PictureContext);
-  const { stateFaceImg } = useContext(FaceImgContext);
   const getClickHandl = (type?: "subject" | "face") => {
     switch (type) {
       case "subject":
       case "face":
         return () => {
           if (state.model_name !== "kling-v1-5") {
-            //TODO：メッセージの修正
-            message.info("Test");
+            message.info("モードをV1.5に変更しました。");
             dispatch({ type: "SET_MODEL", payload: "kling-v1-5" });
           }
           dispatch({ type: "SET_IMAGE_REFERENCE", payload: type });
@@ -41,16 +33,13 @@ const ImgUpload: React.FC = () => {
       default:
         return () => {
           if (state.model_name !== "kling-v1") {
-            //TODO：メッセージの修正
-            message.info("Test22222");
+            message.info("モードをV1.0に変更しました。");
             dispatch({ type: "SET_MODEL", payload: "kling-v1" });
           }
           dispatch({ type: "SET_IMAGE_REFERENCE", payload: "bgReference" });
         }
     }
   }
-  const [faceImgUrlList, setFaceImgUrlList] = useState<string[]>([]);
-  console.log(stateFaceImg);
 
   return (
     <Flex vertical style={{ border: "1px solid #434343", borderRadius: "8px", gap: "10px", padding: "8px" }}>
@@ -87,60 +76,6 @@ const ImgUpload: React.FC = () => {
               <BgRefFooter />
         }
       </Flex>
-      <Button
-        onClick={async () => {
-          //await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
-          // await faceapi.loadFaceExpressionModel('/models');
-          // await faceapi.loadTinyFaceDetectorModel('/models');
-          // await faceapi.loadFaceRecognitionModel('/models');
-          await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
-          await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
-
-          const imghtml = document.getElementById("img");
-
-          // const canvas = document.createElement('canvas');
-          // const ctx = canvas.getContext('2d');
-          // const displaySize = { width: imghtml?.clientWidth ?? 500, height: imghtml?.clientHeight ?? 180 };
-          const detections = await faceapi
-            .detectAllFaces("img", new faceapi.SsdMobilenetv1Options())
-            .withFaceLandmarks();
-          // .withFaceLandmarks(true);
-          // .withFaceExpressions();
-
-          // faceapi.matchDimensions(canvas, displaySize);
-          // canvas.style.position = 'absolute';
-          // document.body.append(canvas);
-          // const resizedDetections = faceapi.resizeResults(detections, displaySize);
-          // faceapi.draw.drawDetections(canvas, resizedDetections); // 位置
-          // faceapi.draw.drawFaceLandmarks(canvas, resizedDetections); // 路阔
-          // faceapi.draw.drawFaceExpressions(canvas, resizedDetections); // 表情
-
-
-
-          setFaceImgUrlList([]);
-          //获取图片中所有的人脸
-          detections.forEach(detection => {
-            // 检查 imghtml 是否为 null 以及是否为 HTMLImageElement 类型
-            if (imghtml instanceof HTMLImageElement) {
-              const box = detection.detection.box;
-              const canvas = document.createElement('canvas');
-              const ctx = canvas.getContext('2d');
-
-              canvas.width = box.width;
-              canvas.height = box.height;
-
-              // 从视频帧中截取人脸区域
-              if (ctx !== null) {
-                ctx.drawImage(imghtml, box.x, box.y, box.width, box.height, 0, 0, box.width, box.height);
-              }
-              // 转换为图像数据（如 base64）
-              const faceImageData = canvas.toDataURL('image/jpeg');
-
-              setFaceImgUrlList(prevList => [...prevList, faceImageData]);
-            }
-          });
-        }}
-      >Test</Button>
     </Flex>
   );
 };
@@ -150,7 +85,6 @@ const ImgUpload: React.FC = () => {
 
 
 const FaceMask = () => {
-
   const { stateFaceImg } = useContext(FaceImgContext);
   return (
     <>
@@ -459,16 +393,6 @@ const ShowImages = (props: { src: string }) => {
   const imgRef = React.useRef<HTMLImageElement>(null);
   const { state, dispatch } = useContext(PictureContext);
   const { stateFaceImg, dispatchFaceImg } = useContext(FaceImgContext);
-  // useEffect(() => {
-  //   if (imgRef.current) {
-  //     imgRef.current.onload = (e) => {
-  //       console.log(imgRef.current?.naturalHeight, imgRef.current?.clientHeight);
-  //       if (imgRef.current) {
-  //         dispatchFaceImg({ type: "SER_Zoom", payload: imgRef.current.clientHeight / imgRef.current.naturalHeight });
-  //       }
-  //     }
-  //   }
-  // }, [imgRef.current])
 
   const delImg = () => {
     dispatch({ type: "SET_IMAGE", payload: "" });
