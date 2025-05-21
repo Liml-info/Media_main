@@ -1,57 +1,60 @@
 import React, { useState } from 'react';
-import { Tabs, Form, Input, Button, Checkbox, Space, Flex } from 'antd';
+import { Tabs, Form, Input, Button, Checkbox, Space, Flex, message } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
-import { createStyles,keyframes } from 'antd-style';
+import { createStyles, keyframes } from 'antd-style';
 import type { TabsProps } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { fetchHistory } from '@/services/getHistory';
 import logoUrl from '@/assets/images/logo.png';
+import { loginToServer } from '@/services/authentication';
+import { useAuth } from '@/contexts/AuthContext';
+import axios from 'axios';
 
 const useStyles = createStyles(({ }) => {
-  
+
   const gradientMove = keyframes`
       0% { transform: translate(-50%, -50%) rotate(0deg); }
       100% { transform: translate(50%, 50%) rotate(360deg); }
     `;
-  return{
-  cyberBgStyle: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
-    background: '#0a0a0a',
-    position: 'relative',
-    overflow: 'hidden',
-    backgroundImage: `
+  return {
+    cyberBgStyle: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: '100vh',
+      background: '#0a0a0a',
+      position: 'relative',
+      overflow: 'hidden',
+      backgroundImage: `
       linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
-    backgroundSize: '20px 20px',
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      width: '600px',
-      height: '600px',
-      background: 'linear-gradient(45deg, #00ff88, #09f)',
-      borderRadius: '30% 70% 70% 30%/30% 30% 70% 70%',
-      animation: `${gradientMove} 15s infinite alternate`,
-      filter: 'blur(80px)',
-      opacity: 0.3
+      backgroundSize: '20px 20px',
+      '&::before': {
+        content: '""',
+        position: 'absolute',
+        width: '600px',
+        height: '600px',
+        background: 'linear-gradient(45deg, #00ff88, #09f)',
+        borderRadius: '30% 70% 70% 30%/30% 30% 70% 70%',
+        animation: `${gradientMove} 15s infinite alternate`,
+        filter: 'blur(80px)',
+        opacity: 0.3
+      }
+    },
+    container: {
+
+      position: "relative",
+      margin: "0 auto",
+      height: "416px",
+      padding: "40px 20px",
+      background: "rgba(255,255,255,0.05)",
+      backdropFilter: "blur(12px)",
+      borderRadius: "16px",
+      border: "1px solid rgba(255,255,255,0.1)",
+      boxShadow: "0 0 40px rgba(0,255,136,0.15)",
+      width: "400px",
     }
-  },
-  container: {
-    
-  position: "relative",
-  margin: "0 auto",
-  height: "416px", 
-  padding: "40px 20px",
-  background: "rgba(255,255,255,0.05)",
-  backdropFilter: "blur(12px)",
-  borderRadius: "16px",
-  border: "1px solid rgba(255,255,255,0.1)",
-  boxShadow: "0 0 40px rgba(0,255,136,0.15)",
-  width: "400px",
   }
-}
 });
 
 const AuthPage = () => {
@@ -79,16 +82,16 @@ const AuthPage = () => {
     <div className={styles.cyberBgStyle}>
       {/* 動的グラデーションレイヤー */}
       <div className="gradient-layer"></div>
-      
+
       <div className={styles.container}>
-        <Flex style={{justifyContent:"center"}}>
-        <img
-              src={logoUrl}
-              alt="Company Logo"
-              style={{  height: "80px", padding: "10px" }}
-            />
+        <Flex style={{ justifyContent: "center" }}>
+          <img
+            src={logoUrl}
+            alt="Company Logo"
+            style={{ height: "80px", padding: "10px" }}
+          />
         </Flex>
-      <LoginForm />
+        <LoginForm />
         {/* <Tabs 
           activeKey={activeKey}
           onChange={setActiveKey}
@@ -101,47 +104,80 @@ const AuthPage = () => {
     </div>
   );
 };
-
-// ログインフォームコンポーネント
-interface LoginFormProps {
-  switchTab: React.Dispatch<React.SetStateAction<string>>;
+interface LoginResponse {
+  access_token: string;
+  refresh_token: string;
+  message: string;
+  } 
+interface LoginRequest  {
+    username: string;
+    password: string;
 }
+
+const tmpHost = "http://localhost:3006";
+// ログインフォームコンポーネント
+// interface LoginFormProps {
+//   switchTab: React.Dispatch<React.SetStateAction<string>>;
+// }
 const LoginForm = () => {
   const navigate = useNavigate();
-  const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
-    navigate('/main'); // ログイン成功後にメイン画面に遷移
+  const { login } = useAuth();
+  const onFinish = async (values: any) => {
+    try {
+
+      const tryOnResponse = await axios.post<LoginResponse>(`${tmpHost}/auth/login`,
+        values as LoginRequest
+      );
+      
+      if(tryOnResponse.status !== 200){
+        message.error("ログインに失敗しました。");
+        return;
+      }
+      if(tryOnResponse.data.message){
+        message.error(tryOnResponse.data.message);
+        return;
+      }   
+      navigate('/main'); // ログイン成功後にメイン画面に遷移
+      await login({
+        username: values.username,
+        access_token: tryOnResponse.data.access_token,
+        refresh_token: tryOnResponse.data.refresh_token,
+      }); // ログイン成功後にログイン状態を更新
+    } catch (error) {
+      message.error("ログインに失敗しました。");
+      return;
+    }
     //fetchHistory();
   };
-return (
-  <Form 
-  onFinish={onFinish}
-  >
-    <Form.Item name="username" rules={[{ required: true,message:"メールアドレスを入力してください。" }]}>
-      <Input style={{height:"40px",borderRadius:"20px"}} prefix={<UserOutlined />} placeholder="メールアドレス" />
-    </Form.Item>
-    
-    <Form.Item name="password" rules={[{ required: true,message:"パスワードを入力してください。"}]}>
-      <Input.Password style={{height:"40px",borderRadius:"20px"}} prefix={<LockOutlined />} placeholder="パスワード" />
-    </Form.Item>
-    <Form.Item>
-      <Button style={{height:"40px",borderRadius:"20px"}} type="primary" htmlType="submit" block>
-        ログイン
-      </Button>
-      {/* <div style={{ marginTop: 16 }}>
+  return (
+    <Form
+      onFinish={onFinish}
+    >
+      <Form.Item name="username" rules={[{ required: true, message: "メールアドレスを入力してください。" }]}>
+        <Input style={{ height: "40px", borderRadius: "20px" }} prefix={<UserOutlined />} placeholder="メールアドレス" />
+      </Form.Item>
+
+      <Form.Item name="password" rules={[{ required: true, message: "パスワードを入力してください。" }]}>
+        <Input.Password style={{ height: "40px", borderRadius: "20px" }} prefix={<LockOutlined />} placeholder="パスワード" />
+      </Form.Item>
+      <Form.Item>
+        <Button style={{ height: "40px", borderRadius: "20px" }} type="primary" htmlType="submit" block>
+          ログイン
+        </Button>
+        {/* <div style={{ marginTop: 16 }}>
         アカウントがありませんか？ 
         <Button type="link" onClick={() => switchTab('register')}>
           今すぐ登録
         </Button>
       </div> */}
-    </Form.Item>
-    {/* <Form.Item>
+      </Form.Item>
+      {/* <Form.Item>
       <Button type="link" onClick={() => switchTab('forgot')}>
         パスワードを忘れましたか？
       </Button>
     </Form.Item> */}
-  </Form>
-);
+    </Form>
+  );
 }
 
 // // 新規登録フォームコンポーネント

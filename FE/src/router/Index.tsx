@@ -10,6 +10,7 @@ import { TryOnProvider } from '@/contexts/TryOnContext'
 import AuthPage from '@/pages/99_Login/AuthPage'
 import Assets from '@/pages/02_Assets'
 import AllTools from '@/pages/07_AllTools'
+import PrivateRoute from '@/components/Route/PrivateRoute'
 
 const router = createBrowserRouter([
   {
@@ -18,15 +19,15 @@ const router = createBrowserRouter([
   },
   {
     path: '/main',
-    element: <MainLayout/>,
+    element: <PrivateRoute><MainLayout/></PrivateRoute>,
     children: [
       {
         path: '',
-        element: <AllTools/>
+        element: <PrivateRoute><AllTools/></PrivateRoute>
       },
       {
         path: 'assets',
-        element: <Assets/>
+        element: <PrivateRoute><Assets/></PrivateRoute>
       }
     ]
   },
@@ -36,15 +37,15 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'picture',
-        element:<PictureProvider><Picture/></PictureProvider>
+        element:<PrivateRoute><PictureProvider><Picture/></PictureProvider></PrivateRoute>
       },
       {
         path: 'video',
-        element: <VideoProvider><Video/></VideoProvider>
+        element: <PrivateRoute><VideoProvider><Video/></VideoProvider></PrivateRoute>
       },
       {
         path: 'try-on',
-        element: <TryOnProvider><TryOn/></TryOnProvider>
+        element: <PrivateRoute><TryOnProvider><TryOn/></TryOnProvider></PrivateRoute>
       }
     ]
   }

@@ -3,6 +3,7 @@ import router from '@/router/Index'
 // 移除与局部声明冲突的 'App' 导入
 import { ConfigProvider, App, theme } from 'antd';
 import { RouterProvider } from "react-router-dom";
+import { AuthProvider } from './contexts/AuthContext';
 function BaseApp() {
   return (
     <ConfigProvider
@@ -24,17 +25,19 @@ function BaseApp() {
           colorFillQuaternary: 'rgba(255, 255, 255, 0.04)',
           borderRadius: 6,
         },
-        
+
         components: {
-          Layout:{
-            siderBg:"black",
-            bodyBg:"black"
+          Layout: {
+            siderBg: "black",
+            bodyBg: "black"
           },
         }
       }}
     >
       <App>
-        <RouterProvider router={router} />
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
       </App>
     </ConfigProvider>
   )

@@ -185,7 +185,7 @@
       "responses": [
         {
           "uuid": "5db35959-fa77-45ff-bf5a-cc557b863554",
-          "body": "{\n  \"access_token\": \"\",\n  \"refresh_token\": \"\",\n  \"expires_in\": {{faker 'number.int' max=99999}}\n}",
+          "body": "{\n  \"access_token\": \"qqweeqe\",\n  \"refresh_token\": \"eeeeqweqweq\",\n  \"expires_in\": {{faker 'number.int' max=99999}}\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "登录成功",
@@ -389,7 +389,7 @@
       "responses": [
         {
           "uuid": "7d09f576-532d-4ce5-8db1-24f9de4a6abb",
-          "body": "{\n  \"status\": \"{{oneOf (array 'uploading' 'preprocessing' 'rendering' 'postprocessing' 'completed')}}\",\n  \"current_stage_progress\": {{faker 'number.float'}},\n  \"debug_info\": {\n    \"render_frames\": {{faker 'number.int' max=99999}},\n    \"gpu_utilization\": {{faker 'number.int' max=99999}}\n  }\n}",
+          "body": "{\n  \"code\": 0,\n  \"message\": \"任务创建成功\",\n  \"data\": {\n    \"task_id\": \"task_7890abc\",\n    \"task_status\": \"submitted\",\n    \"created_at\": \"{{nowTimestamp}}\",\n    \"updated_at\": \"{{nowTimestamp}}\"\n  }\n}",
           "latency": 0,
           "statusCode": 202,
           "label": "任务已接受",
@@ -569,7 +569,7 @@
       "responses": [
         {
           "uuid": "34db417a-f858-43e1-9cfe-a493b1394919",
-          "body": "{\n  \"task_id\": \"vid_abc123\",\n  \"queue_position\": {{faker 'number.int' max=99999}},\n  \"estimated_wait\": {{faker 'number.int' max=99999}},\n  \"preview_image\": \"\"\n}",
+          "body": "{\n  \"code\": 0,\n  \"message\": \"任务创建成功\",\n  \"data\": {\n    \"task_id\": \"task_7890abc\",\n    \"task_status\": \"submitted\",\n    \"created_at\": \"{{nowTimestamp}}\",\n    \"updated_at\": \"{{nowTimestamp}}\"\n  }\n}",
           "latency": 0,
           "statusCode": 202,
           "label": "任务已接受",
@@ -797,7 +797,7 @@
       "responses": [
         {
           "uuid": "0babcaf3-2999-41b4-bd38-8c96d5efe492",
-          "body": "{\n  \"code\": {{faker 'number.int' max=99999}},\n  \"message\": \"\",\n  \"request_id\": \"\",\n  \"data\": {\n    \"task_id\": \"\"\n  }\n}",
+          "body": "{\n  \"code\": 0,\n  \"message\": \"任务创建成功\",\n  \"data\": {\n    \"task_id\": \"task_7890abc\",\n    \"task_status\": \"submitted\",\n    \"created_at\": \"{{nowTimestamp}}\",\n    \"updated_at\": \"{{nowTimestamp}}\"\n  }\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "成功提交请求",
@@ -977,7 +977,7 @@
       "responses": [
         {
           "uuid": "80b7a209-ee36-4cbe-9ffb-08c2c2360177",
-          "body": "{\n  \"code\": {{faker 'number.int' max=99999}},\n  \"message\": \"\",\n  \"request_id\": \"\",\n  \"data\": {\n    \"task_id\": \"\"\n  }\n}",
+          "body": "{\n  \"code\": 0,\n  \"message\": \"任务创建成功\",\n  \"data\": {\n    \"task_id\": \"task_7890abc\",\n    \"task_status\": \"submitted\",\n    \"created_at\": \"{{nowTimestamp}}\",\n    \"updated_at\": \"{{nowTimestamp}}\"\n  }\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "成功提交请求",
