@@ -6,7 +6,9 @@ export interface GeneratorResponseType {
 
 interface DataDataType {
     task_id:string;
-    task_status:string;
+    task_status:TaskStatusType;
     created_at:number;
     updated_at:number;
 }
+
+export type TaskStatusType = "submitted"|"processing"|"succeeded"|"failed";

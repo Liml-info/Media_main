@@ -1,8 +1,10 @@
-import { Button, Flex, Select, Space, Typography } from "antd";
+import { Button, Flex, message, Select, Space, Typography } from "antd";
 import { useContext } from "react";
-import { ModelType, TryOnContext } from "@/contexts/TryOnContext";
+import { TryOnContext } from "@/contexts/TryOnContext";
 import ImgUpload from "./components/ImgUpload";
 import SimpleBar from "simplebar-react";
+import { TryOnModelType } from "@/types/VirtualTryOnRequest";
+import { validationErrorMap, VirtualTryOnRequestSchema } from "@/zod/VirtualTryOn";
 const { Title, Text } = Typography;
 
 const App: React.FC = () => {
@@ -17,7 +19,7 @@ const App: React.FC = () => {
             value={state.model_name}
             style={{ width: 150 }}
             onChange={(value) => {
-              dispatch({ type: "SET_MODEL", payload: value as ModelType });
+              dispatch({ type: "SET_MODEL", payload: value as TryOnModelType });
             }}
             options={[
               { value: 'kolors-virtual-try-on-v1-5', label: 'モードv1.5' },
@@ -48,8 +50,18 @@ const App: React.FC = () => {
         </SimpleBar>
       </Flex>
       <Flex style={{ alignItems: "center", padding: "0px 20px", height: "65px", justifyContent: "flex-end" , flexShrink: 0 }}>
-        <Button type="primary" onClick={() => {
-          console.log(JSON.stringify(state));
+        <Button type="primary"  style={{width:"60%",height:"40px"}} onClick={() => {
+          console.log(state);
+          
+          const result =  VirtualTryOnRequestSchema.safeParse(state,{ errorMap: validationErrorMap });
+          if (result.success) {
+            alert("画像をアップロードしてください");
+            return;
+          }else{
+            result.error.errors.forEach((error)=>{
+              message.error(error.message);
+              console.log(error.path,error.message);})
+          }
         }}>生成する</Button>
       </Flex>
     </Flex>

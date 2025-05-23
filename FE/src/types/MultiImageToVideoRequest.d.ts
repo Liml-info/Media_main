@@ -1,3 +1,4 @@
+
 // 单张参考图片配置
 interface ImageItem {
     image: string; // 图片URL或Base64编码（无data前缀）

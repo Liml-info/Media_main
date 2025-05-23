@@ -1,22 +1,22 @@
+import { TryOnModelType } from '@/types/VirtualTryOnRequest';
 import React, { createContext, useReducer, Dispatch } from 'react';
 
-export type ModelType = 'kolors-virtual-try-on-v1' | 'kolors-virtual-try-on-v1-5';
 
 type State = {
-  model_name: ModelType;
+  model_name: TryOnModelType;
   human_image:string;
-  clothes_image:string;
+  cloth_image:string;
 };
 
 type Action =
-  | { type: 'SET_MODEL'; payload: ModelType }
+  | { type: 'SET_MODEL'; payload: TryOnModelType }
   | { type: 'SET_HUMAN_IMAGE'; payload: string }
   | { type: 'SET_CLOTHES_IMAGE'; payload: string };
 
 const initialState: State = {
   model_name: 'kolors-virtual-try-on-v1-5',
   human_image:'',
-  clothes_image:'',
+  cloth_image:'',
 };
 
 const reducer = (state: State, action: Action): State => {
@@ -26,7 +26,7 @@ const reducer = (state: State, action: Action): State => {
     case 'SET_HUMAN_IMAGE':
       return {...state, human_image: action.payload };
     case 'SET_CLOTHES_IMAGE':
-      return {...state, clothes_image: action.payload };
+      return {...state, cloth_image: action.payload };
     default:
       return state;
   }

@@ -1,10 +1,12 @@
-import { ModelType, PictureContext } from "@/contexts/PictureContext";
-import { Button, Flex, Select, Space, Typography } from "antd";
+import { ImageAspectRatioType, ModelType, PictureContext } from "@/contexts/PictureContext";
+import { Button, Flex, message, Select, Space, Typography } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useContext, useMemo } from "react";
 import ImgUpload from "./components/ImgUpload";
 import RefrenceImage from "./components/ImgUpload";
 import SimpleBar from "simplebar-react";
+import { ImageGenerationSchema } from "@/zod/ImageGeneration";
+import { ImageGenerationRequest } from "@/types/ImageGenerationRequest";
 const { Title, Text } = Typography;
 
 const App: React.FC = () => {
@@ -81,22 +83,25 @@ const aspect_ratio_options = useMemo(() => {
           <RefrenceImage></RefrenceImage>
           </Flex>
         </Flex>
-        <Flex vertical style={{ marginBottom: "10px" }}>
-          <Space style={{ marginBottom: "10px" }}>
-            <Text>表示したくないコンテンツ（オプション）</Text>
-          </Space>
-          <Flex>
-            <TextArea
-              style={{ width: "100%" }}
-              value={state.negative_prompt.value}
-              onChange={(e) => {
-                dispatch({ type: "SET_NEGATIVE_PROMPT", payload: e.target.value });
-              }}
-              placeholder="ビデオに表示したくない内容を入力してください。例：アニメーション、ファジィ表現、変形加工、破壊表現、低品質素材、コラージュ..."
-              maxLength={2500}
-              autoSize={{ minRows: 3, maxRows: 5 }}></TextArea>
-          </Flex>
-        </Flex>
+          {
+            state.negative_prompt.show ?
+              <Flex vertical style={{ marginBottom: "10px" }}>
+                <Space style={{ marginBottom: "10px" }}>
+                  <Text>表示したくないコンテンツ（オプション）</Text>
+                </Space>
+                <Flex>
+                  <TextArea
+                    style={{ width: "100%" }}
+                    value={state.negative_prompt.value}
+                    onChange={(e) => {
+                      dispatch({ type: "SET_NEGATIVE_PROMPT", payload: e.target.value });
+                    }}
+                    placeholder="ビデオに表示したくない内容を入力してください。例：アニメーション、ファジィ表現、変形加工、破壊表現、低品質素材、コラージュ..."
+                    maxLength={2500}
+                    autoSize={{ minRows: 3, maxRows: 5 }}></TextArea>
+                </Flex>
+              </Flex> : null
+          }
         </SimpleBar>
       </Flex>
       <Space style={{ padding: "0px 20px", }}>
@@ -105,7 +110,7 @@ const aspect_ratio_options = useMemo(() => {
           value={state.aspect_ratio.value}
           style={{ width: 150 }}
           onChange={(value) => {
-            dispatch({ type: "SET_ASPECT_RATIO", payload: value });
+            dispatch({ type: "SET_ASPECT_RATIO", payload: value as ImageAspectRatioType });
           }}
           options={aspect_ratio_options}
         />
@@ -128,8 +133,35 @@ const aspect_ratio_options = useMemo(() => {
         />
       </Space>
       <Flex style={{ alignItems: "center", padding: "0px 20px", height: "65px", justifyContent: "flex-end",flexShrink:0  }}>
-        <Button type="primary" onClick={()=>{
-          console.log(JSON.stringify(state));
+        <Button type="primary" style={{width:"60%",height:"40px"}} onClick={()=>{
+          const tmpImage = state.image_reference.value === "face"? state.face.faceImg : state.image.value;
+          const tmpImageFidelity = state.image_reference.value === "face"? state.face.image_fidelity : 
+          state.image_reference.value === "bgReference"? state.bgReference.image_fidelity : state.subject.image_fidelity;
+          const tmpHumanFidelity = state.image_reference.value === "subject"? state.subject.human_fidelity : undefined;
+
+
+
+          const requestBody:ImageGenerationRequest = {
+            model_name: state.model_name,
+            prompt: state.prompt.value,
+            negative_prompt: state.negative_prompt.show?state.negative_prompt.value:undefined,
+            image: tmpImage? tmpImage : undefined,
+            image_reference: state.image_reference.value === "bgReference" ? undefined : state.image_reference.value, 
+            image_fidelity: tmpImageFidelity?tmpImageFidelity/100:undefined,
+            human_fidelity: tmpHumanFidelity?tmpHumanFidelity/100:undefined,
+            aspect_ratio: state.aspect_ratio.value,
+            n: Number(state.n.value),
+
+          };
+          
+          const result =  ImageGenerationSchema.safeParse(requestBody);
+          if(result.success){
+            console.log(result.data);
+          }else{
+            result.error.errors.forEach((error)=>{
+              message.error(error.message);
+              console.log(error.path,error.message);});
+          }
         }}>生成する</Button>
       </Flex>
     </Flex>

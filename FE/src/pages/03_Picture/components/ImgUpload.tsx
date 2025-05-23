@@ -1,4 +1,4 @@
-import { PictureContext } from '@/contexts/PictureContext';
+import { PictureAction, PictureContext } from '@/contexts/PictureContext';
 import { DeleteOutlined, InboxOutlined, PlusSquareOutlined, UploadOutlined } from '@ant-design/icons';
 import * as faceapi from '@vladmandic/face-api';
 import type { UploadProps } from 'antd';
@@ -196,6 +196,7 @@ const FaceMask = () => {
 const FaceIcon = () => {
 
   const { stateFaceImg, dispatchFaceImg } = useContext(FaceImgContext);
+  const { dispatch } = useContext(PictureContext);
   const selectedStyle = {
     border: "2px solid green",
     borderRadius: "10px",
@@ -235,6 +236,7 @@ const FaceIcon = () => {
               }}
               onClick={() => {
                 dispatchFaceImg({ type: "SER_SelectedIndex", payload: index });
+                dispatch({ type: "SET_FACE_IMAGE", payload: item.image });
               }}
             />
           ))
@@ -346,7 +348,7 @@ const BgRefFooter: React.FC = () => {
   )
 }
 
-const getFaceImgAsync = async (dispatch: React.Dispatch<FaceImgAction>, base64Img: string) => {
+const getFaceImgAsync = async (dispatch: React.Dispatch<FaceImgAction>, dispatchPicture:React.Dispatch<PictureAction> , base64Img: string) => {
   dispatch({ type: "SET_loading", payload: true });
   await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
   await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
@@ -354,14 +356,12 @@ const getFaceImgAsync = async (dispatch: React.Dispatch<FaceImgAction>, base64Im
   const imghtml = new Image();
   imghtml.src = base64Img;
   await new Promise((resolve) => (imghtml.onload = resolve));
-
-  console.log(imghtml);
   if (imghtml instanceof HTMLImageElement) {
     const detections = await faceapi
       .detectAllFaces(imghtml, new faceapi.SsdMobilenetv1Options())
       .withFaceLandmarks();
     dispatch({ type: "DEL_FACEIMGLIST" });
-    detections.forEach(detection => {
+    detections.forEach((detection,index) => {
 
       const box = detection.detection.box;
       const canvas = document.createElement('canvas');
@@ -374,6 +374,9 @@ const getFaceImgAsync = async (dispatch: React.Dispatch<FaceImgAction>, base64Im
       }
       const faceImageData = canvas.toDataURL('image/jpeg');
       dispatch({ type: "ADD_FACE_IMAGE", payload: { x: box.x, y: box.y, width: box.width, height: box.height, image: faceImageData } });
+      if(index === 0){
+        dispatchPicture({ type: "SET_FACE_IMAGE", payload: faceImageData });
+      }
     }
     );
   }
@@ -407,7 +410,7 @@ const ShowImages = (props: { src: string }) => {
     
     dispatchFaceImg({ type: "Init" });
     fileToBase64(file).then((base64) => {
-      getFaceImgAsync(dispatchFaceImg, base64 as string);
+      getFaceImgAsync(dispatchFaceImg,dispatch, base64 as string);
       dispatch({ type: "SET_IMAGE", payload: base64 as string });
     });
     return false;
@@ -477,7 +480,6 @@ const ShowImages = (props: { src: string }) => {
                 position: "absolute",
               }}
               onLoad={(e) => {
-                console.log(imgRef.current?.naturalHeight, imgRef.current?.clientHeight);
                 if (imgRef.current) {
                   dispatchFaceImg({ type: "SER_Zoom", payload: imgRef.current.clientHeight / imgRef.current.naturalHeight });
                 }
@@ -513,7 +515,7 @@ const DraggerComponent = () => {
       return false;
     }
     fileToBase64(file).then((base64) => {
-      getFaceImgAsync(dispatchFaceImg, base64 as string)
+      getFaceImgAsync(dispatchFaceImg,dispatch, base64 as string)
       dispatch({ type: "SET_IMAGE", payload: base64 as string });
     });
     return false;

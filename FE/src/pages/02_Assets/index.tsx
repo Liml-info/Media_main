@@ -1,7 +1,7 @@
-import { Button, Dropdown, Flex, MenuProps, Select, Space, Typography } from "antd";
+import { Button, Dropdown, Flex, MenuProps, Image , Space, Typography, Modal } from "antd";
 import { DownOutlined,DownloadOutlined  } from "@ant-design/icons";
 import { useContext, useEffect, useMemo, useState } from "react";
-import { ModelType, TryOnContext } from "@/contexts/TryOnContext";
+import { TryOnModelType, TryOnContext } from "@/contexts/TryOnContext";
 import { useNavigate } from "react-router-dom";
 import videoUrl from "@/assets/images/video.jpg";
 import tryonUrl from "@/assets/images/tryon.jpg";
@@ -38,7 +38,6 @@ const Assets: React.FC = () => {
   const [showFilter, setShowFilter] = useState<string>("all");
   const onClick: MenuProps['onClick'] = (e) => {
     setShowFilter(e.key);
-    console.log(e);
   };
   
   useEffect(() => {
@@ -131,8 +130,11 @@ const Imgvideo: React.FC<ImgClickProps> = ({type,url,text}) => (
     }}
     >
       {
-        type === "image"? <img src={url} style={{width:"100%",height:"100%",objectFit:"contain"}}></img>:
-        <video src={url} style={{width:"100%",height:"100%",objectFit:"contain"}}></video>
+        type === "image"? <Image src={url} style={{
+          width: "225.7px",
+          height: "225.7px",
+          objectFit:"contain"}}/>:
+        <VideoShow url={url}></VideoShow>
       }
         <Flex style={{
             position:"absolute",
@@ -154,13 +156,29 @@ const Imgvideo: React.FC<ImgClickProps> = ({type,url,text}) => (
             whiteSpace:"nowrap",
           }}
           >{text}</span>
-          <DownloadOutlined  onClick={()=>{
+          <DownloadOutlined style={{fontSize:"20px"}}  onClick={()=>{
             downloadImage(url,text.slice(0,10)??"バーチャル試着");
           }}></DownloadOutlined>
         </Flex>
         </Flex>
   </Flex>
 )
+const VideoShow = (props:{url:string}) => {
+  const {url} = props;
+  const [open, setOpen] = useState<boolean>(false);
+  return <>
+  <video src={url} onClick={() => setOpen(true)} style={{width:"100%",height:"100%",objectFit:"contain"}}></video>
+  <Modal
+        closable={{ 'aria-label': 'Custom Close Button' }}
+        open={open}
+        onCancel={() => setOpen(false)}
+        footer={null}
+        width={"60%"}
+      > 
+      <video src={url} controls style={{width:"100%",height:"100%",objectFit:"contain"}}></video>
+      </Modal>
+  </>;
+}
 async function downloadImage(url:string, filename:string) {
   try {
     const response = await fetch(url);

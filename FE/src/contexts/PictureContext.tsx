@@ -6,6 +6,7 @@ interface ValueType<T> {
 }
 type ReferenceType = 'subject' | 'face' | 'bgReference';
 export type ModelType = 'kling-v1-5' | 'kling-v1';
+export  type ImageAspectRatioType = '16:9' | '9:16' | '1:1' | '4:3' | '3:4' | '3:2' | '2:3' | '21:9';
 interface FaceImgInfo {
   x: number,
   y: number,
@@ -24,17 +25,17 @@ type State = {
     human_fidelity: number;
   },
   face: {
-    faceImgList: Array<FaceImgInfo>;
+    faceImg: string;
     image_fidelity: number;
   },
   bgReference: {
     image_fidelity: number;
   }
   n: ValueType<string>;
-  aspect_ratio: ValueType<string>;
+  aspect_ratio: ValueType<ImageAspectRatioType>;
 };
 
-type Action =
+export type PictureAction =
   | { type: 'SET_MODEL'; payload: ModelType }
   | { type: 'SET_PROMPT'; payload: string }
   | { type: 'SET_NEGATIVE_PROMPT'; payload: string }
@@ -43,9 +44,10 @@ type Action =
   | { type: 'SET_SUBJECT_IMAGE_FIDELITY'; payload: number }
   | { type: 'SET_SUBJECT_HUMAN_FIDELITY'; payload: number }
   | { type: 'SET_FACE_IMAGE_FIDELITY'; payload: number }
+  | { type: 'SET_FACE_IMAGE'; payload: string }
   | { type: 'SET_BGREF_IMAGE_FIDELITY'; payload: number }
   | { type: 'SET_N'; payload: string }
-  | { type: 'SET_ASPECT_RATIO'; payload: string };
+  | { type: 'SET_ASPECT_RATIO'; payload: ImageAspectRatioType };
 
 const initialState: State = {
   model_name: 'kling-v1-5',
@@ -70,7 +72,7 @@ const initialState: State = {
     human_fidelity: 45
   },
   face: {
-    faceImgList: [],
+    faceImg: "",
     image_fidelity: 45
   },
   bgReference: {
@@ -86,7 +88,7 @@ const initialState: State = {
   }
 };
 
-const reducer = (state: State, action: Action): State => {
+const reducer = (state: State, action: PictureAction): State => {
   switch (action.type) {
     case 'SET_MODEL':
       {
@@ -109,7 +111,13 @@ const reducer = (state: State, action: Action): State => {
     case 'SET_NEGATIVE_PROMPT':
       return { ...state, negative_prompt: { value: action.payload, show: state.negative_prompt.show } };
     case 'SET_IMAGE':
-      return { ...state, image: { value: action.payload, show: state.image.show } };
+      const tmpNegativePrompt = { ...state.negative_prompt };
+      if (action.payload === "") {
+        tmpNegativePrompt.show = true;
+      } else {
+        tmpNegativePrompt.show = false;
+      }
+      return { ...state, image: { value: action.payload, show: state.image.show } , negative_prompt: tmpNegativePrompt };
     case 'SET_IMAGE_REFERENCE':
       return { ...state, image_reference: { value: action.payload, show: state.image_reference.show } };
     case 'SET_SUBJECT_IMAGE_FIDELITY':
@@ -118,6 +126,8 @@ const reducer = (state: State, action: Action): State => {
       return { ...state, subject: { ...state.subject, human_fidelity: action.payload } };
     case 'SET_FACE_IMAGE_FIDELITY':
       return { ...state, face: { ...state.face, image_fidelity: action.payload } };
+    case 'SET_FACE_IMAGE':
+      return {...state, face: {...state.face, faceImg: action.payload } };
     case 'SET_BGREF_IMAGE_FIDELITY':
       return { ...state, bgReference: { ...state.bgReference, image_fidelity: action.payload } };
     case 'SET_N':
@@ -129,7 +139,7 @@ const reducer = (state: State, action: Action): State => {
 
 export const PictureContext = createContext<{
   state: State;
-  dispatch: Dispatch<Action>;
+  dispatch: Dispatch<PictureAction>;
 }>({
   state: initialState,
   dispatch: () => null

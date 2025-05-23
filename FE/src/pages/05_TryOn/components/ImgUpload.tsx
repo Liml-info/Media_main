@@ -22,7 +22,7 @@ const ImgUpload: React.FC<ImgUploadProps>= (props) => {
     }
   } 
   const ShowHeader = () => {
-    const imgData = type == "human" ? state.human_image : state.clothes_image;
+    const imgData = type == "human" ? state.human_image : state.cloth_image;
     if (imgData) {
       return <ShowImages src={imgData} changeImage={changeImage}></ShowImages>;
     }

@@ -1,6 +1,5 @@
 import { Button, Flex, Select, Space, Typography } from "antd";
 import { useContext } from "react";
-import { ModelType, TryOnContext } from "@/contexts/TryOnContext";
 import { useNavigate } from "react-router-dom";
 import videoUrl from "@/assets/images/video.jpg";
 import tryonUrl from "@/assets/images/tryon.jpg";
@@ -31,7 +30,7 @@ const items: ClickItem[] = [
 const AllTools: React.FC = () => {
   const navigate = useNavigate();
   return (
-    <Flex style={{ height: "100%",gap:20,padding:"20px 20px" }}>
+    <Flex style={{ height: "100%",gap:20,padding:"20px 20px",flexWrap:"wrap" }}>
         {
             items.map((item,index) => (
                 <ImgClick key={index} img={item.img} onClick={() => navigate(item.url)} text={item.text}/>

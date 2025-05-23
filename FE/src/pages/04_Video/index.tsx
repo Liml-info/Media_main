@@ -227,7 +227,7 @@ const App: React.FC = () => {
         </Popover>
       </Space>
       <Flex style={{ alignItems: "center", padding: "0px 20px", height: "65px", justifyContent: "flex-end",flexShrink:0 }}>
-        <Button type="primary" onClick={() => {
+        <Button type="primary" style={{width:"60%",height:"40px"}} onClick={() => {
           console.log(JSON.stringify(state));
         }}>生成する</Button>
       </Flex>
