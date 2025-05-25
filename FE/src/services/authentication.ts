@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const tmpHost = "http://localhost:3006";
+const tmpHost = "http://localhost:5159";
 interface LoginResponse {
   access_token: string;
   refresh_token: string;
@@ -12,7 +12,7 @@ interface LoginRequest  {
 }
 export const loginToServer = async (param:LoginRequest) => {
     try {
-      const tryOnResponse = await axios.post<LoginResponse>(`${tmpHost}/auth/login`,
+      const tryOnResponse = await axios.post<LoginResponse>(`${tmpHost}/api/Auth/login`,
         param
       );
       if(tryOnResponse.status !== 200){

@@ -1,7 +1,6 @@
-import { Button, Dropdown, Flex, MenuProps, Image , Space, Typography, Modal } from "antd";
+import { Button, Dropdown, Flex, MenuProps, Image , Space, Typography, Modal, Spin } from "antd";
 import { DownOutlined,DownloadOutlined  } from "@ant-design/icons";
 import { useContext, useEffect, useMemo, useState } from "react";
-import { TryOnModelType, TryOnContext } from "@/contexts/TryOnContext";
 import { useNavigate } from "react-router-dom";
 import videoUrl from "@/assets/images/video.jpg";
 import tryonUrl from "@/assets/images/tryon.jpg";
@@ -9,14 +8,37 @@ import pictureUrl from "@/assets/images/picture.jpg";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { fetchHistory } from "@/services/getHistory";
+import { VirtualTryOnHistoryItem } from "@/store/slices/VirtualTryOnSlice";
+import Item from "antd/es/list/Item";
 
+
+const VirtualTryOnHistoryItemToMediaItem = (list: VirtualTryOnHistoryItem[]) => {
+  const returnList: MediaItem[] = [];
+  list.forEach(item => {
+    if(item.src.length > 0 && (item.task_status ==='succeed' || item.task_status ==='submitted' || item.task_status ==='processing')){
+      item.src.forEach(img => {
+        returnList.push({
+          id: item.id,
+          taskType: 'virtualTryOn',
+          type: 'image',
+          src: img.url,
+          prompt: ""
+        } as MediaItem);
+      });
+    }
+  });
+
+
+  
+  return returnList;
+}
 
 type MenuItem = Required<MenuProps>['items'][number];
 export interface MediaItem {
   id: string;
-  taskType: 'virtualTryOn' | 'imageGeneration' | 'image2Video' | 'text2Video';
-  type: 'image' | 'video';
-  src: string[];
+  taskType: 'virtualTryOn' | 'imageGeneration' | 'image2Video' | 'text2Video'| 'multiImageToVideo';
+  type: 'image' | 'video'| 'processing';
+  src: string;
   prompt: string;
 }
 
@@ -44,40 +66,22 @@ const Assets: React.FC = () => {
     fetchHistory();
   }, []);
 
-  const state = useSelector((rootState: RootState) => rootState.history);
-
-
+  const state = useSelector((rootState: RootState) => {
+    return {
+      virtualTryOnHistory: rootState.VirtualTryOn.virtualTryOnHistory,
+      imageGenerationHistory: rootState.ImageToVideo.imageToVideoHistory,
+      image2VideoHistory: rootState.ImageToVideo.imageToVideoHistory,
+      text2VideoHistory: rootState.TextToVideo.textToVideoHistory,
+      multiImageToVideoHistory: rootState.MultiImageToVideo.MultiImageToVideoHistory,
+    };
+  });
 
   const allHistoryItems: MediaItem[] = useMemo(()=>{
+
+
+
     return  [
-      ...state.virtualTryOnHistory.map(item => ({
-        id: item.id,
-        taskType: 'virtualTryOn',
-        type: 'image',
-        src: Array.isArray(item.src)? item.src : [item.src],
-        prompt: ""
-      } as MediaItem)),
-      ...state.imageGenerationHistory.map(item => ({
-        id: item.id,
-        taskType: 'imageGeneration',
-        type: 'image',
-        src: Array.isArray(item.src)? item.src : [item.src],
-        prompt: item.prompt || ""
-      } as MediaItem)),
-      ...state.image2VideoHistory.map(item => ({
-        id: item.id,
-        taskType: 'image2Video',
-        type: 'video',
-        src: Array.isArray(item.src)? item.src : [item.src],
-        prompt: item.prompt || ""
-      } as MediaItem)),
-      ...state.text2VideoHistory.map(item => ({
-        id: item.id,
-        taskType: 'text2Video',
-        type: 'video',
-        src: Array.isArray(item.src)? item.src : [item.src],
-        prompt: item.prompt || ""
-      } as MediaItem))
+      ...VirtualTryOnHistoryItemToMediaItem(state.virtualTryOnHistory),
     ];
   },[state]);
 
@@ -108,7 +112,7 @@ const Assets: React.FC = () => {
             }
           })
           .map((item,index) => (
-            <Imgvideo key={index} url={item.src[0]} text={item.prompt} type={item.type}></Imgvideo>
+            <Imgvideo key={index} url={item.src} text={item.prompt} type={item.type}></Imgvideo>
           ))
           
         }
@@ -117,7 +121,7 @@ const Assets: React.FC = () => {
   )
 }
 interface ImgClickProps {
-  type:"image"|"video",
+  type:"image"|"video"|"processing",
   url: string,
   text: string
 }
@@ -134,7 +138,11 @@ const Imgvideo: React.FC<ImgClickProps> = ({type,url,text}) => (
           width: "225.7px",
           height: "225.7px",
           objectFit:"contain"}}/>:
+        type === "video"? 
         <VideoShow url={url}></VideoShow>
+        :<Flex vertical style={{width:"100%",height:"100%",justifyContent:"center",alignItems:"center"}}>
+          <Spin size="large"></Spin>
+        </Flex>
       }
         <Flex style={{
             position:"absolute",

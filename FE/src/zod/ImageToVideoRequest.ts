@@ -16,7 +16,7 @@ export const ImageToVideoRequestSchema = z.object({
 });
 
 // 自定义错误信息映射
-export const validationErrorMap: z.ZodErrorMap = (issue, ctx) => {
+export const ImageToVideoValidationErrorMap: z.ZodErrorMap = (issue, ctx) => {
   const errorMessages: Record<string, string> = {
     'model_name': '无效的模型名称，可选值为kling-v1、kling-v1-5、kling-v1-6、kling-v2-master',
     'image': '参考图像为必填项',

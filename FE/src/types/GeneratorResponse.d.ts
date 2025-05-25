@@ -10,5 +10,3 @@ interface DataDataType {
     created_at:number;
     updated_at:number;
 }
-
-export type TaskStatusType = "submitted"|"processing"|"succeeded"|"failed";

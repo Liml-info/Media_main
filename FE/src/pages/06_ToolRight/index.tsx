@@ -1,9 +1,10 @@
 import { DownOutlined } from "@ant-design/icons";
 import { Anchor, Col, Dropdown, Flex, Row, Space } from "antd";
 import type { MenuProps } from 'antd';
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import SimpleBar from 'simplebar-react';
 import MediaViewer from "./components/MediaViewer";
+import { fetchHistory } from "@/services/getHistory";
 type MenuItem = Required<MenuProps>['items'][number];
 const filterItem: MenuItem[] = [
   {

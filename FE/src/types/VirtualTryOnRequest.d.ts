@@ -7,3 +7,53 @@ export interface VirtualTryOnRequest {
   }
 
 export type TryOnModelType = 'kolors-virtual-try-on-v1' | 'kolors-virtual-try-on-v1-5';
+
+//------------查询任务（单个）
+interface QueryTaskSingleResponse {
+  code: number; // 错误码；具体定义见错误码
+  message: string; // 错误信息
+  request_id: string; // 请求ID，系统生成，用于跟踪请求、排查问题
+  data: DataType;
+}
+
+
+//------------查询任务（列表）
+interface QueryTaskListResponse {
+  code: number; // 错误码；具体定义见错误码
+  message: string; // 错误信息
+  request_id: string; // 请求ID，系统生成，用于跟踪请求、排查问题
+  data: DataType[];
+}
+
+interface DataType {
+  request:VirtualTryOnRequest; // 请求参数
+  response:TaskSingleData; // 响应参数
+}
+
+interface TaskListData {
+  total: number; // 任务总数
+  page: number; // 当前页码（从1开始）
+  page_size: number; // 每页显示数量
+  tasks: TaskSingleData[]; // 任务列表
+}
+
+//------------公用部分
+
+
+interface TaskSingleData {
+  task_id: string; // 任务ID，系统生成
+  task_status: TaskStatusType; // 任务状态
+  task_status_msg: string; // 任务状态信息，当任务失败时展示失败原因（如触发平台的内容风控等）
+  created_at: number; // 任务创建时间，Unix时间戳、单位ms
+  updated_at: number; // 任务更新时间，Unix时间戳、单位ms
+  task_result: TaskResult;
+}
+
+interface TaskResult {
+  images: ImageItem[];
+}
+
+interface ImageItem {
+  index: number; // 图片编号
+  url: string; // 生成图片的URL（请注意，为保障信息安全，生成的图片/视频会在30天后被清理，请及时转存）
+}

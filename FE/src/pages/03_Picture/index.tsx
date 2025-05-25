@@ -7,6 +7,7 @@ import RefrenceImage from "./components/ImgUpload";
 import SimpleBar from "simplebar-react";
 import { ImageGenerationSchema } from "@/zod/ImageGeneration";
 import { ImageGenerationRequest } from "@/types/ImageGenerationRequest";
+import { fetchImageGeneration } from "@/services/imageGeneration";
 const { Title, Text } = Typography;
 
 const App: React.FC = () => {
@@ -156,7 +157,9 @@ const aspect_ratio_options = useMemo(() => {
           
           const result =  ImageGenerationSchema.safeParse(requestBody);
           if(result.success){
-            console.log(result.data);
+            fetchImageGeneration(result.data).then((res)=>{
+              console.log(res);
+            })
           }else{
             result.error.errors.forEach((error)=>{
               message.error(error.message);

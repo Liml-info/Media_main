@@ -1,22 +1,21 @@
 
 import axios from "axios";
 import { store } from "@/store";
-import { QueryTaskListResponse, QueryTaskSingleResponse, VirtualTryOnRequest } from "@/types/VirtualTryOnRequest";
+import {  ImageGenerationRequest, QueryImageGenerationListResponse, QueryImageGenerationSingleResponse } from "@/types/ImageGenerationRequest";
 import { GeneratorResponseType } from "@/types/GeneratorResponse";
 import { message } from "antd";
-import { clearVirtualTryOn, fetchSuccessVirtualTryOn, VirtualTryOnHistoryItem } from "@/store/slices/VirtualTryOnSlice";
+import { clearImageGeneration, fetchSuccessImageGeneration, ImageGenerationHistoryItem } from "@/store/slices/ImageGenerationSlice";
 
 const tmpHost = "http://localhost:5159";
 
-export const fetchVirtualTryOn = async (requestBody:VirtualTryOnRequest) => {
+export const fetchImageGeneration = async (requestBody:ImageGenerationRequest) => {
     try {
-      const tmpRequestBody:VirtualTryOnRequest = {
-        model_name: requestBody.model_name,
-        cloth_image: requestBody.cloth_image.replace(/data:image\/.*?;base64,/, ''),
-        human_image: requestBody.human_image.replace(/data:image\/.*?;base64,/, ''),
+      const tmpRequestBody:ImageGenerationRequest = {
+        ...requestBody,
+        image: requestBody.image?.replace("data:image/png;base64,",""),
       }
       console.log(JSON.stringify(tmpRequestBody));
-      const response = await axios.post<GeneratorResponseType>(`${tmpHost}/api/VritualTryOn`, tmpRequestBody,{
+      const response = await axios.post<GeneratorResponseType>(`${tmpHost}/api/ImagesGenerations`, tmpRequestBody,{
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + localStorage.getItem('access_token') 
@@ -25,7 +24,7 @@ export const fetchVirtualTryOn = async (requestBody:VirtualTryOnRequest) => {
       if(response.data.code.toString() === "0" && response.data.data.task_id){
         //TODO
         await fetchTryOnTaskList();
-        fetchTryOnTaskStatus(response.data.data.task_id).then((res) => {
+        fetchImageGenerationStatus(response.data.data.task_id).then((res) => {
           if(res.data.response.task_status === "succeed"){
             fetchTryOnTaskList();
           }
@@ -41,11 +40,11 @@ export const fetchVirtualTryOn = async (requestBody:VirtualTryOnRequest) => {
     }
   };
 
-export const fetchTryOnTaskStatus = async (taskId: string) => {
-  return new Promise<QueryTaskSingleResponse>((resolve, reject) => {
+export const fetchImageGenerationStatus = async (taskId: string) => {
+  return new Promise<QueryImageGenerationSingleResponse>((resolve, reject) => {
     const checkStatus = async () => {
       try {
-        const response = await axios.get<QueryTaskSingleResponse>(`${tmpHost}/api/VritualTryOn/${taskId}`,{
+        const response = await axios.get<QueryImageGenerationSingleResponse>(`${tmpHost}/api/ImagesGenerations/${taskId}`,{
           headers: {
             'Authorization': 'Bearer '+ localStorage.getItem('access_token')
           }
@@ -70,7 +69,7 @@ export const fetchTryOnTaskStatus = async (taskId: string) => {
 
 export const fetchTryOnTaskList = async (page: number = 1, pageSize: number = 500) => {
   try {
-    const response = await axios.get<QueryTaskListResponse>(`${tmpHost}/api/VritualTryOn?pageNum=${page}&pageSize=${pageSize}`,{
+    const response = await axios.get<QueryImageGenerationListResponse>(`${tmpHost}/api/ImagesGenerations?pageNum=${page}&pageSize=${pageSize}`,{
       headers: {
         'Authorization': 'Bearer '+ localStorage.getItem('access_token')
       }
@@ -83,20 +82,21 @@ export const fetchTryOnTaskList = async (page: number = 1, pageSize: number = 50
     message.error("请求server失败");
   }
 }
- const responseToReducer = (response:QueryTaskListResponse) => {
+ const responseToReducer = (response:QueryImageGenerationListResponse) => {
   const { dispatch } = store;
   
   if(response.code.toString() === "0"){
-    dispatch(clearVirtualTryOn());
-    const reducerData:Array<VirtualTryOnHistoryItem> = response.data.map((item) => {
+    dispatch(clearImageGeneration());
+    const reducerData:Array<ImageGenerationHistoryItem> = response.data.map((item) => {
       return {
         id: item.response.task_id,
+        src: item.response.task_result?.images??[],
+        thumbnailSrc: item.request.image?item.request.image:item.response.task_result?.images[0].url??"",
         task_status: item.response.task_status,
-        task_status_msg: item.response.task_status_msg,
-        src: item.response.task_result.images?item.response.task_result.images:[],
-        thumbnailSrc: item.response.task_result.images?item.response.task_result.images[0].url:"",
+        prompt: item.request.prompt,
+        negative_prompt: item.request.negative_prompt
       }
     })
-    dispatch(fetchSuccessVirtualTryOn(reducerData));
+    dispatch(fetchSuccessImageGeneration(reducerData));
   }
 }

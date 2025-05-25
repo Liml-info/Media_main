@@ -5,6 +5,7 @@ import ImgUpload from "./components/ImgUpload";
 import SimpleBar from "simplebar-react";
 import { TryOnModelType } from "@/types/VirtualTryOnRequest";
 import { validationErrorMap, VirtualTryOnRequestSchema } from "@/zod/VirtualTryOn";
+import { fetchVirtualTryOn } from "@/services/virtualTryOn";
 const { Title, Text } = Typography;
 
 const App: React.FC = () => {
@@ -50,12 +51,13 @@ const App: React.FC = () => {
         </SimpleBar>
       </Flex>
       <Flex style={{ alignItems: "center", padding: "0px 20px", height: "65px", justifyContent: "flex-end" , flexShrink: 0 }}>
-        <Button type="primary"  style={{width:"60%",height:"40px"}} onClick={() => {
-          console.log(state);
-          
+        <Button type="primary"  style={{width:"60%",height:"40px"}} onClick={() => {         
           const result =  VirtualTryOnRequestSchema.safeParse(state,{ errorMap: validationErrorMap });
           if (result.success) {
-            alert("画像をアップロードしてください");
+            fetchVirtualTryOn(result.data).then((res) => {
+              console.log("Test");
+              
+            });
             return;
           }else{
             result.error.errors.forEach((error)=>{

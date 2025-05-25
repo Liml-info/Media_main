@@ -105,8 +105,7 @@ const AuthPage = () => {
   );
 };
 interface LoginResponse {
-  access_token: string;
-  refresh_token: string;
+  token: string;
   message: string;
   } 
 interface LoginRequest  {
@@ -114,7 +113,7 @@ interface LoginRequest  {
     password: string;
 }
 
-const tmpHost = "http://localhost:3006";
+const tmpHost = "http://localhost:5159";
 // ログインフォームコンポーネント
 // interface LoginFormProps {
 //   switchTab: React.Dispatch<React.SetStateAction<string>>;
@@ -124,9 +123,9 @@ const LoginForm = () => {
   const { login } = useAuth();
   const onFinish = async (values: any) => {
     try {
-
-      const tryOnResponse = await axios.post<LoginResponse>(`${tmpHost}/auth/login`,
-        values as LoginRequest
+      console.log(values);
+      
+      const tryOnResponse = await axios.post<LoginResponse>(`${tmpHost}/api/Auth/login?username=${values.username}&password=${values.password}`
       );
       
       if(tryOnResponse.status !== 200){
@@ -140,8 +139,8 @@ const LoginForm = () => {
       navigate('/main'); // ログイン成功後にメイン画面に遷移
       await login({
         username: values.username,
-        access_token: tryOnResponse.data.access_token,
-        refresh_token: tryOnResponse.data.refresh_token,
+        access_token: tryOnResponse.data.token,
+        //refresh_token: tryOnResponse.data.refresh_token,
       }); // ログイン成功後にログイン状態を更新
     } catch (error) {
       message.error("ログインに失敗しました。");

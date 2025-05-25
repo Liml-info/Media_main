@@ -29,7 +29,7 @@ import React, {
   
     const login = async (user: User) => {
       localStorage.setItem('access_token', user.access_token);
-      localStorage.setItem('refresh_token', user.refresh_token);
+      localStorage.setItem('refresh_token', user.refresh_token??"");
       setUser(user);
     };
   

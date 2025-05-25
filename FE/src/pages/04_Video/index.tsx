@@ -7,6 +7,12 @@ import { AspectRatio, Duration, InputImageType, inputType, Mode, ModelName, Vide
 import type { TabsProps } from 'antd';
 import MultiImgUpload from "./components/MultiImgUpload";
 import SimpleBar from "simplebar-react";
+import { TextToVideoRequestSchema, TextToVideoValidationErrorMap } from "@/zod/TextToVideo";
+import { ImageToVideoRequestSchema, ImageToVideoValidationErrorMap } from "@/zod/ImageToVideoRequest";
+import { MultiImageToVideoRequestSchema, MultiImageToVideoValidationErrorMap } from "@/zod/MultiImageToVideo";
+import { MultiImageToVideoRequest } from "@/types/MultiImageToVideoRequest";
+import { ImageToVideoRequest } from "@/types/ImageToVideoRequest";
+import { TextToVideoRequest } from "@/types/TextToVideoRequest";
 const { Title, Text } = Typography;
 
 
@@ -228,7 +234,69 @@ const App: React.FC = () => {
       </Space>
       <Flex style={{ alignItems: "center", padding: "0px 20px", height: "65px", justifyContent: "flex-end",flexShrink:0 }}>
         <Button type="primary" style={{width:"60%",height:"40px"}} onClick={() => {
-          console.log(JSON.stringify(state));
+          if (input_type === "text") {
+            const tmpRequest:TextToVideoRequest = {
+              model_name: state.model_name === "kling-v1-5" ? undefined : state.model_name  ,
+              prompt: state.prompt,
+              negative_prompt: state.negative_prompt,
+              mode: state.mode,
+              duration: state.duration,
+              aspect_ratio: state.aspect_ratio,
+              cfg_scale: state.cfg_scale,
+            }
+            const result =  TextToVideoRequestSchema.safeParse(tmpRequest,{ errorMap: TextToVideoValidationErrorMap });
+            if (result.success) {
+              console.log(result.data);
+              return;
+            }else{
+              result.error.errors.forEach((error)=>{
+                message.error(error.message);
+                console.log(error.path,error.message);})
+            }
+          }else{
+            if (input_image_type == "firstend") {
+              const tmpRequest:ImageToVideoRequest = {
+                model_name: state.model_name,
+                prompt: state.prompt,
+                negative_prompt: state.negative_prompt,
+                mode: state.mode,
+                duration: state.duration,
+                aspect_ratio: state.aspect_ratio,
+                image: state.image,
+                cfg_scale: state.cfg_scale,
+                image_tail: state.image_tail?state.image_tail:undefined,
+              }
+            const result =  ImageToVideoRequestSchema.safeParse(tmpRequest,{ errorMap: ImageToVideoValidationErrorMap });
+            if (result.success) {
+              console.log(result.data);
+              return;
+            }else{
+              result.error.errors.forEach((error)=>{
+                message.error(error.message);
+                console.log(error.path,error.message);})
+            }
+            }else{
+              const tmpImage_list = state.image_list.filter((item)=>item!=undefined && item.image);
+              const tmpRequest:MultiImageToVideoRequest = {
+                model_name: 'kling-v1-6',
+                prompt: state.prompt,
+                negative_prompt: state.negative_prompt,
+                mode: state.mode,
+                duration: state.duration,
+                aspect_ratio: state.aspect_ratio,
+                image_list: tmpImage_list,
+              }
+              const result =  MultiImageToVideoRequestSchema.safeParse(tmpRequest,{ errorMap: MultiImageToVideoValidationErrorMap });
+            if (result.success) {
+              console.log(result.data);
+              return;
+            }else{
+              result.error.errors.forEach((error)=>{
+                message.error(error.message);
+                console.log(error.path,error.message);})
+            }
+            }
+          }
         }}>生成する</Button>
       </Flex>
     </Flex>

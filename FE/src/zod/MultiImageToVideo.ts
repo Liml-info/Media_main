@@ -19,7 +19,7 @@ export const MultiImageToVideoRequestSchema = z.object({
 });
 
 // 自定义错误信息映射
-export const validationErrorMap: z.ZodErrorMap = (issue, ctx) => {
+export const  MultiImageToVideoValidationErrorMap: z.ZodErrorMap = (issue, ctx) => {
   const errorMessages: Record<string, string> = {
     'model_name': '无效的模型名称，当前仅支持kling-v1-6',
     'image_list': '参考图片数量必须在1-4张之间',

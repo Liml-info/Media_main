@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Dropdown, Flex, Layout, Menu, Divider, Splitter } from 'antd';
 import type { MenuProps } from 'antd';
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { BarsOutlined, HomeOutlined, FolderOutlined, PictureOutlined, PlaySquareOutlined, ProductOutlined, AliwangwangOutlined } from '@ant-design/icons';
 import ToolRight from '@/pages/06_ToolRight';
+import { fetchHistory } from '@/services/getHistory';
 type MenuItem = Required<MenuProps>['items'][number];
 const items: MenuItem[] = [
   {
@@ -46,6 +47,11 @@ const siderStyle: React.CSSProperties = {
   scrollbarGutter: 'stable',
 };
 const ToolLayout: React.FC = () => {
+  
+  useEffect(() => {
+    fetchHistory();
+    console.log("fetchHistory222"); 
+  }, []);
   const navigate = useNavigate();
   const location = useLocation();
   const onClick: MenuProps['onClick'] = (e) => {

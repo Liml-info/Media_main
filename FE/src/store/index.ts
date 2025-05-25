@@ -1,13 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit';
-import historyReducer from './slices/historySlice';
-import pendingTaskReducer from './slices/pendingTask';
+import ImageGenerationReducer from './slices/ImageGenerationSlice';
+import ImageToVideoReducer from './slices/ImageToVideoSlice';
+import MultiImageToVideoReducer from './slices/MultiImageToVideoSlice';
+import TextToVideoReducer from './slices/TextToVideoSlice';
+import VirtualTryOnReducer from './slices/VirtualTryOnSlice';
 
 
 // 配置根Store
 export const store = configureStore({
   reducer: {
-    history: historyReducer, // 新增历史记录Reducer
-    pendingTasks: pendingTaskReducer, // 新增PendingTaskReducer
+    ImageGeneration:ImageGenerationReducer,
+    ImageToVideo:ImageToVideoReducer,
+    MultiImageToVideo:MultiImageToVideoReducer,
+    TextToVideo:TextToVideoReducer,
+    VirtualTryOn:VirtualTryOnReducer,
   },
   devTools: true,
 });

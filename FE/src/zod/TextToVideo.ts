@@ -13,7 +13,7 @@ export const TextToVideoRequestSchema = z.object({
 });
 
 // 自定义错误信息映射
-export const validationErrorMap: z.ZodErrorMap = (issue, ctx) => {
+export const TextToVideoValidationErrorMap: z.ZodErrorMap = (issue, ctx) => {
   const errorMessages: Record<string, string> = {
     'model_name': '无效的模型名称，可选值为kling-v1、kling-v1-6、kling-v2-master',
     'prompt': '正向提示词为必填项，且长度不能超过2500字',
