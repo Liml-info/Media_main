@@ -18,7 +18,7 @@ export interface CommonHistoryItem {
     id: string;
     src: videoItem[] | ImageItem[];
     thumbnailSrc?: string;
-    created_at?: number;
+    created_at?: string;
     task_status?:TaskStatusType;
 }
 

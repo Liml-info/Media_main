@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers,configureStore } from '@reduxjs/toolkit';
 import ImageGenerationReducer from './slices/ImageGenerationSlice';
 import ImageToVideoReducer from './slices/ImageToVideoSlice';
 import MultiImageToVideoReducer from './slices/MultiImageToVideoSlice';

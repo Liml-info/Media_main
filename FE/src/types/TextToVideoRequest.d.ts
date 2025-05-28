@@ -40,10 +40,20 @@ export interface QueryText2VideoListResponse {
     request_id: string; // 请求ID，系统生成，用于跟踪请求、排查问题
     data: DataType[];
   }
-  
+
+  interface Task {
+    task_id: string;
+    user_id: string;
+    task_type: string;
+    status: string;
+    status_msg: string;
+    created_at: string;
+    updated_at: string;
+  }
   interface DataType{
+    task:Task;
     request:TextToVideoRequest;
-    response:Text2VideoTaskItem;
+    result:Text2VideoTaskItem;
   }
 
   interface Text2VideoTaskItem {
@@ -52,8 +62,8 @@ export interface QueryText2VideoListResponse {
     task_status_msg: string; // 任务状态信息，失败时展示原因
     task_info: TaskInfo; // 任务创建时的参数信息
     task_result?: TaskResult; // 任务结果（可选，处理中或失败时可能无结果）
-    created_at: number; // 任务创建时间，Unix时间戳（ms）
-    updated_at: number; // 任务更新时间，Unix时间戳（ms）
+    created_at: string;
+    updated_at: string;
   }
   
   // 复用单个任务中的 TaskInfo 和 TaskResult 接口，避免重复定义

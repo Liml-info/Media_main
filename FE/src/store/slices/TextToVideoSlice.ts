@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CommonHistoryItem } from './ImageGenerationSlice';
 
 
-interface TextToVideoHistoryItem extends CommonHistoryItem {
+export interface TextToVideoHistoryItem extends CommonHistoryItem {
   prompt: string;
 }
 

@@ -1,6 +1,14 @@
 
+import { fetchImageGenerationTaskList } from "./imageGeneration";
+import { fetchImageToVideoTaskList } from "./imageToVideo";
+import { fetchMultiImageToVideoTaskList } from "./MultiImageToVideo";
+import { fetchTextToVideoTaskList } from "./TextToVideo";
 import { fetchTryOnTaskList } from "./virtualTryOn";
+
 export const fetchHistory = async () => {
-  console.log("fetchHistory");
+  fetchImageGenerationTaskList();
+  fetchImageToVideoTaskList();
+  fetchTextToVideoTaskList();
+  fetchMultiImageToVideoTaskList();
   fetchTryOnTaskList();
 };

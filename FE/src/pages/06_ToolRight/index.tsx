@@ -1,10 +1,8 @@
 import { DownOutlined } from "@ant-design/icons";
-import { Anchor, Col, Dropdown, Flex, Row, Space } from "antd";
+import { Dropdown, Flex, Space } from "antd";
 import type { MenuProps } from 'antd';
-import { ReactNode, useEffect, useMemo, useState } from "react";
-import SimpleBar from 'simplebar-react';
+import { useMemo, useState } from "react";
 import MediaViewer from "./components/MediaViewer";
-import { fetchHistory } from "@/services/getHistory";
 type MenuItem = Required<MenuProps>['items'][number];
 const filterItem: MenuItem[] = [
   {
@@ -20,10 +18,11 @@ const filterItem: MenuItem[] = [
     label: 'ビデオ',
   }
 ];
+type FilterType = 'all' | 'picture' | 'video';
 const ToolRight: React.FC = () => {
-  const [showFilter, setShowFilter] = useState<string>("all");
+  const [showFilter, setShowFilter] = useState<FilterType>("all");
   const onClick: MenuProps['onClick'] = (e) => {
-    setShowFilter(e.key);
+    setShowFilter(e.key as FilterType);
     console.log(e);
   };
   const filterTitle = useMemo(() => {
@@ -40,7 +39,7 @@ const ToolRight: React.FC = () => {
         </Dropdown>
       </Flex>
       <Flex style={{ width: "100%", flexGrow: 1, overflow: "hidden"}}>
-        <MediaViewer></MediaViewer>
+        <MediaViewer filterType={showFilter}></MediaViewer>
       </Flex>
     </Flex>
   );

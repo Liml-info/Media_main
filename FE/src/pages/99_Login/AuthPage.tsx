@@ -9,6 +9,7 @@ import logoUrl from '@/assets/images/logo.png';
 import { loginToServer } from '@/services/authentication';
 import { useAuth } from '@/contexts/AuthContext';
 import axios from 'axios';
+import modal from 'antd/es/modal';
 
 const useStyles = createStyles(({ }) => {
 
@@ -105,7 +106,9 @@ const AuthPage = () => {
   );
 };
 interface LoginResponse {
-  token: string;
+  data:{
+    token: string;
+  },
   message: string;
   } 
 interface LoginRequest  {
@@ -113,7 +116,7 @@ interface LoginRequest  {
     password: string;
 }
 
-const tmpHost = "http://localhost:5159";
+const tmpHost = "http://localhost:5000";
 // ログインフォームコンポーネント
 // interface LoginFormProps {
 //   switchTab: React.Dispatch<React.SetStateAction<string>>;
@@ -121,15 +124,16 @@ const tmpHost = "http://localhost:5159";
 const LoginForm = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
   const onFinish = async (values: any) => {
     try {
-      console.log(values);
-      
-      const tryOnResponse = await axios.post<LoginResponse>(`${tmpHost}/api/Auth/login?username=${values.username}&password=${values.password}`
+      setLoading(true);
+      const tryOnResponse = await axios.post<LoginResponse>(`${tmpHost}/api/Auth/login`,
+        {username:values.username,password:values.password}
       );
       
       if(tryOnResponse.status !== 200){
-        message.error("ログインに失敗しました。");
+        modal.warning({ title: "ログインに失敗しました。", content: "ユーザー名またはパスワードが間違っています。", okText: "OK", onOk: () => { } });
         return;
       }
       if(tryOnResponse.data.message){
@@ -139,12 +143,14 @@ const LoginForm = () => {
       navigate('/main'); // ログイン成功後にメイン画面に遷移
       await login({
         username: values.username,
-        access_token: tryOnResponse.data.token,
+        access_token: tryOnResponse.data.data.token,
         //refresh_token: tryOnResponse.data.refresh_token,
       }); // ログイン成功後にログイン状態を更新
     } catch (error) {
       message.error("ログインに失敗しました。");
       return;
+    }finally{
+      setLoading(false);
     }
     //fetchHistory();
   };
@@ -160,7 +166,7 @@ const LoginForm = () => {
         <Input.Password style={{ height: "40px", borderRadius: "20px" }} prefix={<LockOutlined />} placeholder="パスワード" />
       </Form.Item>
       <Form.Item>
-        <Button style={{ height: "40px", borderRadius: "20px" }} type="primary" htmlType="submit" block>
+        <Button style={{ height: "40px", borderRadius: "20px" }} loading={loading} type="primary" htmlType="submit" block>
           ログイン
         </Button>
         {/* <div style={{ marginTop: 16 }}>

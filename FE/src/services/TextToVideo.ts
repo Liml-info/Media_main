@@ -1,22 +1,20 @@
 
 import axios from "axios";
 import { store } from "@/store";
-import { QueryTaskListResponse, QueryTaskSingleResponse, VirtualTryOnRequest } from "@/types/VirtualTryOnRequest";
+import {  QueryText2VideoListResponse, QueryText2VideoSingleResponse, TextToVideoRequest } from "@/types/TextToVideoRequest";
 import { GeneratorResponseType } from "@/types/GeneratorResponse";
 import { message } from "antd";
-import { clearVirtualTryOn, fetchSuccessVirtualTryOn, VirtualTryOnHistoryItem } from "@/store/slices/VirtualTryOnSlice";
+import { clearTextToVideo, fetchSuccessTextToVideo, TextToVideoHistoryItem } from "@/store/slices/TextToVideoSlice";
 
 const tmpHost = "http://localhost:5000";
 
-export const fetchVirtualTryOn = async (requestBody:VirtualTryOnRequest) => {
+export const fetchTextToVideo = async (requestBody:TextToVideoRequest) => {
     try {
-      const tmpRequestBody:VirtualTryOnRequest = {
-        model_name: requestBody.model_name,
-        cloth_image: requestBody.cloth_image,
-        human_image: requestBody.human_image,
+      const tmpRequestBody:TextToVideoRequest = {
+        ...requestBody,
       }
       console.log(JSON.stringify(tmpRequestBody));
-      const response = await axios.post<GeneratorResponseType>(`${tmpHost}/api/VritualTryOn`, tmpRequestBody,{
+      const response = await axios.post<GeneratorResponseType>(`${tmpHost}/api/TextToVideo`, tmpRequestBody,{
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + localStorage.getItem('access_token') 
@@ -24,10 +22,10 @@ export const fetchVirtualTryOn = async (requestBody:VirtualTryOnRequest) => {
       });
       if(response.data.code.toString() === "0" && response.data.data.task_id){
         //TODO
-        await fetchTryOnTaskList();
-        fetchTryOnTaskStatus(response.data.data.task_id).then((res) => {
-          if(res.data.result.task_status === "succeed"){
-            fetchTryOnTaskList();
+        await fetchTextToVideoTaskList();
+        fetchTextToVideoStatus(response.data.data.task_id).then((res) => {
+          if(res.data.result?.task_status === "succeed"){
+            fetchTextToVideoTaskList();
           }
         })
       }else{
@@ -43,11 +41,11 @@ export const fetchVirtualTryOn = async (requestBody:VirtualTryOnRequest) => {
     }
   };
 
-export const fetchTryOnTaskStatus = async (taskId: string) => {
-  return new Promise<QueryTaskSingleResponse>((resolve, reject) => {
+export const fetchTextToVideoStatus = async (taskId: string) => {
+  return new Promise<QueryText2VideoSingleResponse>((resolve, reject) => {
     const checkStatus = async () => {
       try {
-        const response = await axios.get<QueryTaskSingleResponse>(`${tmpHost}/api/VritualTryOn/${taskId}`,{
+        const response = await axios.get<QueryText2VideoSingleResponse>(`${tmpHost}/api/TextToVideo/${taskId}`,{
           headers: {
             'Authorization': 'Bearer '+ localStorage.getItem('access_token')
           }
@@ -70,9 +68,9 @@ export const fetchTryOnTaskStatus = async (taskId: string) => {
   });
 };
 
-export const fetchTryOnTaskList = async (page: number = 0, pageSize: number = 0) => {
+export const fetchTextToVideoTaskList = async (page: number = 0, pageSize: number = 0) => {
   try {
-    const response = await axios.get<QueryTaskListResponse>(`${tmpHost}/api/VritualTryOn?pageNum=${page}&pageSize=${pageSize}`,{
+    const response = await axios.get<QueryText2VideoListResponse>(`${tmpHost}/api/TextToVideo?pageNum=${page}&pageSize=${pageSize}`,{
       headers: {
         'Authorization': 'Bearer '+ localStorage.getItem('access_token')
       }
@@ -85,32 +83,32 @@ export const fetchTryOnTaskList = async (page: number = 0, pageSize: number = 0)
     message.error("请求server失败");
   }
 }
- const responseToReducer = (response:QueryTaskListResponse) => {
+ const responseToReducer = (response:QueryText2VideoListResponse) => {
   const { dispatch } = store;
   
   if(response.code.toString() === "0"){
-    dispatch(clearVirtualTryOn());
-    const reducerData:Array<VirtualTryOnHistoryItem> = response.data.map((item) => {
+    dispatch(clearTextToVideo());
+    const reducerData:Array<TextToVideoHistoryItem> = response.data.map((item) => {
       if(item.result){
         return {
           id: item.result.task_id,
+          src: item.result.task_result?.videos??[],
           task_status: item.result.task_status,
-          task_status_msg: item.result.task_status_msg,
-          src: item.result.task_result.images?item.result.task_result.images:[],
-          thumbnailSrc: item.result.task_result.images?item.result.task_result.images[0].url:"",
+          prompt: item.request.prompt??"",
+          negativePrompt: item.request.negative_prompt??"",
           created_at: item.task.created_at,
         }
       }else{
         return {
           id: item.task.task_id,
-          task_status: "processing",
-          task_status_msg: item.task.status_msg,
           src: [],
-          thumbnailSrc: item.request.human_image,
+          task_status: "processing",
+          prompt: item.request.prompt??"",
+          negativePrompt: item.request.negative_prompt??"",
           created_at: item.task.created_at,
         }
       }
     })
-    dispatch(fetchSuccessVirtualTryOn(reducerData));
+    dispatch(fetchSuccessTextToVideo(reducerData));
   }
 }

@@ -10,36 +10,174 @@ import { RootState } from "@/store";
 import { fetchHistory } from "@/services/getHistory";
 import { VirtualTryOnHistoryItem } from "@/store/slices/VirtualTryOnSlice";
 import Item from "antd/es/list/Item";
+import { ImageGenerationHistoryItem } from "@/store/slices/ImageGenerationSlice";
+import { ImageToVideoHistoryItem } from "@/store/slices/ImageToVideoSlice";
+import { TextToVideoHistoryItem } from "@/store/slices/TextToVideoSlice";
+import { MultiImageToVideoHistoryItem } from "@/store/slices/MultiImageToVideoSlice";
 
 
 const VirtualTryOnHistoryItemToMediaItem = (list: VirtualTryOnHistoryItem[]) => {
   const returnList: MediaItem[] = [];
   list.forEach(item => {
-    if(item.src.length > 0 && (item.task_status ==='succeed' || item.task_status ==='submitted' || item.task_status ==='processing')){
+    if((item.task_status ==='succeed' || item.task_status ==='submitted' || item.task_status ==='processing')){
+      if(item.src.length === 0){
+        returnList.push({
+          id: item.id,
+          taskType: 'virtualTryOn',
+          type: "image_processing",
+          src: "",
+          prompt: "",
+          createdAt: item.created_at?new Date(item.created_at):new Date(),
+        } as MediaItem);
+      }else{
+        
       item.src.forEach(img => {
         returnList.push({
           id: item.id,
           taskType: 'virtualTryOn',
-          type: 'image',
+          type: item.task_status === "succeed"?'image':'image_processing',
           src: img.url,
-          prompt: ""
+          prompt: "",
+          createdAt: item.created_at?new Date(item.created_at):new Date(),
         } as MediaItem);
       });
+      }
     }
   });
+  return returnList;
+}
 
-
+const ImageGenerationHistoryItemToMediaItem = (list: ImageGenerationHistoryItem[]) => {
+  const returnList: MediaItem[] = [];
+  list.forEach(item => {
+    if((item.task_status ==='succeed' || item.task_status ==='submitted' || item.task_status ==='processing')){
+      if(item.src.length === 0){
+        returnList.push({
+          id: item.id,
+          taskType: 'imageGeneration',
+          type: "image_processing",
+          src: "",
+          prompt: item.prompt,
+          createdAt: item.created_at?new Date(item.created_at):new Date(),
+        } as MediaItem);
+      }else{
+        item.src.forEach(img => {
+          returnList.push({
+            id: item.id,
+            taskType: 'imageGeneration',
+            type: item.task_status === "succeed"?'image':'image_processing',
+            src: img.url,
+            prompt: item.prompt,
+            createdAt: item.created_at?new Date(item.created_at):new Date(),
+          } as MediaItem);
+        });
+        
+      }
+    }
+  });
   
+  return returnList;
+}
+const ImageToVideoHistoryItemToMediaItem = (list: ImageToVideoHistoryItem[]) => {
+  const returnList: MediaItem[] = [];
+  list.forEach(item => {
+    if((item.task_status ==='succeed' || item.task_status ==='submitted' || item.task_status ==='processing')){
+      if(item.src.length === 0){
+        returnList.push({
+          id: item.id,
+          taskType: 'image2Video',
+          type: "video_processing",
+          src: "",
+          prompt: item.prompt,
+          createdAt: item.created_at?new Date(item.created_at):new Date(),
+        } as MediaItem);
+      }else{
+        
+      item.src.forEach(video => {
+        returnList.push({
+          id: item.id,
+          taskType: 'image2Video',
+          type: item.task_status === "succeed"?'video':'video_processing',
+          src: video.url,
+          prompt: item.prompt,
+          createdAt: item.created_at?new Date(item.created_at):new Date(),
+        } as MediaItem);
+      });
+      }
+    }
+  });
+  return returnList;
+}
+const TextToVideoHistoryItemToMediaItem = (list: TextToVideoHistoryItem[]) => {
+  const returnList: MediaItem[] = [];
+  list.forEach(item => {
+    if((item.task_status ==='succeed' || item.task_status ==='submitted' || item.task_status ==='processing')){
+      if(item.src.length > 0){
+      item.src.forEach(video => {
+        returnList.push({
+          id: item.id,
+          taskType: 'text2Video',
+          type: item.task_status === "succeed"?'video':'video_processing',
+          src: video.url,
+          prompt: item.prompt,
+          createdAt: item.created_at?new Date(item.created_at):new Date(),
+        } as MediaItem);
+      });
+      }else{
+        returnList.push({
+          id: item.id,
+          taskType: 'text2Video',
+          type: "video_processing",
+          src: "",
+          prompt: item.prompt,
+          createdAt: item.created_at?new Date(item.created_at):new Date(),
+        } as MediaItem);
+      }
+    }
+  });
+  return returnList;
+}
+
+const MultiImageToVideoHistoryItemToMediaItem = (list: MultiImageToVideoHistoryItem[]) => {
+  const returnList: MediaItem[] = [];
+  list.forEach(item => {
+    if((item.task_status ==='succeed' || item.task_status ==='submitted' || item.task_status ==='processing')){
+      if(item.src.length === 0){
+        returnList.push({
+          id: item.id,
+          taskType: 'multiImageToVideo',
+          type: "video_processing",
+          src: "",
+          prompt: item.prompt,
+          createdAt: item.created_at?new Date(item.created_at):new Date(),
+        } as MediaItem);
+      }else{
+        item.src.forEach(video => {
+          returnList.push({
+            id: item.id,
+            taskType: 'multiImageToVideo',
+            type: item.task_status === "succeed"?'video':'video_processing',
+            src: video.url,
+            prompt:item.prompt,
+            createdAt: item.created_at?new Date(item.created_at):new Date(),
+          } as MediaItem);
+        });
+        
+      }
+    }
+  });
   return returnList;
 }
 
 type MenuItem = Required<MenuProps>['items'][number];
+type ShowType = 'image' | 'video' | 'image_processing' | 'video_processing';
 export interface MediaItem {
   id: string;
   taskType: 'virtualTryOn' | 'imageGeneration' | 'image2Video' | 'text2Video'| 'multiImageToVideo';
-  type: 'image' | 'video'| 'processing';
+  type: ShowType;
   src: string;
   prompt: string;
+  createdAt: Date;
 }
 
 const filterItem: MenuItem[] = [
@@ -69,22 +207,25 @@ const Assets: React.FC = () => {
   const state = useSelector((rootState: RootState) => {
     return {
       virtualTryOnHistory: rootState.VirtualTryOn.virtualTryOnHistory,
-      imageGenerationHistory: rootState.ImageToVideo.imageToVideoHistory,
+      imageGenerationHistory: rootState.ImageGeneration.imageGenerationHistory,
       image2VideoHistory: rootState.ImageToVideo.imageToVideoHistory,
       text2VideoHistory: rootState.TextToVideo.textToVideoHistory,
       multiImageToVideoHistory: rootState.MultiImageToVideo.MultiImageToVideoHistory,
     };
   });
 
+  console.log(state);
   const allHistoryItems: MediaItem[] = useMemo(()=>{
-
-
-
     return  [
       ...VirtualTryOnHistoryItemToMediaItem(state.virtualTryOnHistory),
-    ];
+     ...ImageGenerationHistoryItemToMediaItem(state.imageGenerationHistory),
+     ...ImageToVideoHistoryItemToMediaItem(state.image2VideoHistory),
+    ...TextToVideoHistoryItemToMediaItem(state.text2VideoHistory),
+    ...MultiImageToVideoHistoryItemToMediaItem(state.multiImageToVideoHistory),
+    ].sort((a,b)=>{ return b.createdAt.getTime() - a.createdAt.getTime()});
   },[state]);
-
+  console.log(allHistoryItems);
+  
   const filterTitle = useMemo(() => {
     return filterItem.find((item) => item?.key === showFilter)
   }, [showFilter]);
@@ -103,9 +244,9 @@ const Assets: React.FC = () => {
           allHistoryItems.filter((item) => {
             if(showFilter === "all"){
               return true;
-            }else if(showFilter === "picture" && item.type === "image"){
+            }else if(showFilter === "picture" && item.type.startsWith("image")){
               return true;
-            }else if(showFilter === "video" && item.type === "video"){
+            }else if(showFilter === "video" && item.type.startsWith("video")){
               return true;
             }else{
               return false;
@@ -121,7 +262,7 @@ const Assets: React.FC = () => {
   )
 }
 interface ImgClickProps {
-  type:"image"|"video"|"processing",
+  type:ShowType,
   url: string,
   text: string
 }
@@ -200,7 +341,7 @@ async function downloadImage(url:string, filename:string) {
     
     URL.revokeObjectURL(blobUrl); // 释放内存
   } catch (error) {
-    console.error('下载失败:', error);
+    console.error('Error downloading image:', error);
   }
 }
 export default Assets;

@@ -24,7 +24,7 @@ const ImgUpload: React.FC<ImgUploadProps>= (props) => {
   const ShowHeader = () => {
     const imgData = type == "human" ? state.human_image : state.cloth_image;
     if (imgData) {
-      return <ShowImages src={imgData} changeImage={changeImage}></ShowImages>;
+      return <ShowImages src={imgData} type={type} changeImage={changeImage}></ShowImages>;
     }
     return <DraggerComponent changeImage={changeImage}></DraggerComponent>;
   }
@@ -45,8 +45,8 @@ const DraggerProps: UploadProps = {
   maxCount: 1,
   showUploadList: false,
 };
-const ShowImages = (props: { src: string, changeImage: (imageUrl: string) => void, }) => {
-  const { changeImage } = props;
+const ShowImages = (props: { src: string,type: "human" | "clothes", changeImage: (imageUrl: string) => void, }) => {
+  const { changeImage,type } = props;
 
   const delImg = () => {
     changeImage("");
@@ -65,15 +65,15 @@ const ShowImages = (props: { src: string, changeImage: (imageUrl: string) => voi
   return (
     <Flex
       onMouseEnter={() => {
-        const mark = document.getElementById("mark") as HTMLDivElement;
+        const mark = document.getElementById(`mark_${type}`) as HTMLDivElement;
         mark.style.display = "flex";
       }}
       onMouseLeave={() => {
-        const mark = document.getElementById("mark") as HTMLDivElement;
+        const mark = document.getElementById(`mark_${type}`) as HTMLDivElement;
         mark.style.display = "none";
       }}
       style={{ justifyContent: "center", borderRadius: "8px", position: "relative", height: "100%" }}>
-      <Flex id="mark" style={
+      <Flex id={`mark_${type}`} style={
         {
           position: "absolute",
           top: 0,

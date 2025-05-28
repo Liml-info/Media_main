@@ -1,5 +1,5 @@
 import { Button, Flex, message, Select, Space, Typography } from "antd";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { TryOnContext } from "@/contexts/TryOnContext";
 import ImgUpload from "./components/ImgUpload";
 import SimpleBar from "simplebar-react";
@@ -10,6 +10,7 @@ const { Title, Text } = Typography;
 
 const App: React.FC = () => {
   const { state, dispatch } = useContext(TryOnContext);
+  const [loading, setLoading] = useState(false);
   return (
     <Flex vertical style={{ height: "100%" }}>
       <Flex style={{ padding: "0px 20px", height: "65px", borderBottom: "1px solid", alignItems: "center" , flexShrink: 0}}>
@@ -51,18 +52,19 @@ const App: React.FC = () => {
         </SimpleBar>
       </Flex>
       <Flex style={{ alignItems: "center", padding: "0px 20px", height: "65px", justifyContent: "flex-end" , flexShrink: 0 }}>
-        <Button type="primary"  style={{width:"60%",height:"40px"}} onClick={() => {         
+        <Button type="primary" loading={loading} style={{width:"60%",height:"40px"}} onClick={() => {         
           const result =  VirtualTryOnRequestSchema.safeParse(state,{ errorMap: validationErrorMap });
           if (result.success) {
+            setLoading(true);
             fetchVirtualTryOn(result.data).then((res) => {
-              console.log("Test");
-              
+              setLoading(false);
+              message.success("生成しました");
             });
             return;
           }else{
             result.error.errors.forEach((error)=>{
               message.error(error.message);
-              console.log(error.path,error.message);})
+            })
           }
         }}>生成する</Button>
       </Flex>

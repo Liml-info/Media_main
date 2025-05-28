@@ -50,7 +50,6 @@ const ToolLayout: React.FC = () => {
   
   useEffect(() => {
     fetchHistory();
-    console.log("fetchHistory222"); 
   }, []);
   const navigate = useNavigate();
   const location = useLocation();
@@ -80,7 +79,7 @@ const ToolLayout: React.FC = () => {
       </Sider>
       <Content style={{height:"100vh"}}>
         <Splitter style={{ boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}>
-          <Splitter.Panel defaultSize="30%" min="30%" max="40%">
+          <Splitter.Panel defaultSize="40%" min="40%" max="50%">
             <Outlet />
           </Splitter.Panel>
           <Splitter.Panel>

@@ -47,11 +47,20 @@ export  interface QueryMultiImage2VideoListResponse {
   }
   
 
-  
+  interface Task {
+    task_id: string;
+    user_id: string;
+    task_type: string;
+    status: string;
+    status_msg: string;
+    created_at: string;
+    updated_at: string;
+  }
   
   interface DataType{
+    task:Task;
     request:MultiImageToVideoRequest;
-    response:MultiImage2VideoTaskItem;
+    result:MultiImage2VideoTaskItem;
   }
 
   interface MultiImage2VideoTaskItem {
@@ -60,8 +69,8 @@ export  interface QueryMultiImage2VideoListResponse {
     task_status_msg: string; // 状态描述
     task_info: TaskInfo; // 任务创建参数
     task_result?: TaskResult; // 任务结果（可选）
-    created_at: number; // 创建时间
-    updated_at: number; // 更新时间
+    created_at: string;
+    updated_at: string;
   }
   
   // 复用单个任务中的 TaskInfo、TaskResult、VideoItem 接口，避免重复定义

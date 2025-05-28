@@ -4,7 +4,7 @@
   "name": "All",
   "endpointPrefix": "",
   "latency": 0,
-  "port": 3006,
+  "port": 5159,
   "hostname": "",
   "folders": [],
   "routes": [
@@ -49,7 +49,7 @@
       "type": "http",
       "documentation": "发送注册验证码",
       "method": "post",
-      "endpoint": "auth/register/code",
+      "endpoint": "api/Auth/login",
       "responses": [
         {
           "uuid": "9bd9e721-4a7a-45b6-9715-ef796173539a",

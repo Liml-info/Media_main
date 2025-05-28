@@ -24,10 +24,20 @@ interface QueryTaskListResponse {
   request_id: string; // 请求ID，系统生成，用于跟踪请求、排查问题
   data: DataType[];
 }
+interface Task {
+  task_id: string;
+  user_id: string;
+  task_type: string;
+  status: string;
+  status_msg: string;
+  created_at: string;
+  updated_at: string;
+}
 
 interface DataType {
+  task:Task;
   request:VirtualTryOnRequest; // 请求参数
-  response:TaskSingleData; // 响应参数
+  result:TaskSingleData; // 响应参数
 }
 
 interface TaskListData {
@@ -44,8 +54,8 @@ interface TaskSingleData {
   task_id: string; // 任务ID，系统生成
   task_status: TaskStatusType; // 任务状态
   task_status_msg: string; // 任务状态信息，当任务失败时展示失败原因（如触发平台的内容风控等）
-  created_at: number; // 任务创建时间，Unix时间戳、单位ms
-  updated_at: number; // 任务更新时间，Unix时间戳、单位ms
+  created_at: string;
+  updated_at: string;
   task_result: TaskResult;
 }
 

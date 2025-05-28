@@ -1,21 +1,22 @@
 
 import axios from "axios";
 import { store } from "@/store";
-import {  ImageGenerationRequest, QueryImageGenerationListResponse, QueryImageGenerationSingleResponse } from "@/types/ImageGenerationRequest";
+import {  ImageToVideoRequest, QueryImage2VideoListResponse, QueryImage2VideoSingleResponse } from "@/types/ImageToVideoRequest";
 import { GeneratorResponseType } from "@/types/GeneratorResponse";
 import { message } from "antd";
-import { clearImageGeneration, fetchSuccessImageGeneration, ImageGenerationHistoryItem } from "@/store/slices/ImageGenerationSlice";
+import { clearImageToVideo, fetchSuccessImageToVideo, ImageToVideoHistoryItem } from "@/store/slices/ImageToVideoSlice";
 
 const tmpHost = "http://localhost:5000";
 
-export const fetchImageGeneration = async (requestBody:ImageGenerationRequest) => {
+export const fetchImageToVideo = async (requestBody:ImageToVideoRequest) => {
     try {
-      const tmpRequestBody:ImageGenerationRequest = {
+      const tmpRequestBody:ImageToVideoRequest = {
         ...requestBody,
         image: requestBody.image,
+        image_tail: requestBody.image_tail,
       }
       console.log(JSON.stringify(tmpRequestBody));
-      const response = await axios.post<GeneratorResponseType>(`${tmpHost}/api/ImagesGenerations`, tmpRequestBody,{
+      const response = await axios.post<GeneratorResponseType>(`${tmpHost}/api/ImageToVideo`, tmpRequestBody,{
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + localStorage.getItem('access_token') 
@@ -23,10 +24,10 @@ export const fetchImageGeneration = async (requestBody:ImageGenerationRequest) =
       });
       if(response.data.code.toString() === "0" && response.data.data.task_id){
         //TODO
-        await fetchImageGenerationTaskList();
-        fetchImageGenerationStatus(response.data.data.task_id).then((res) => {
+        await fetchImageToVideoTaskList();
+        fetchImageToVideoStatus(response.data.data.task_id).then((res) => {
           if(res.data.result?.task_status === "succeed"){
-            fetchImageGenerationTaskList();
+            fetchImageToVideoTaskList();
           }
         })
       }else{
@@ -42,11 +43,11 @@ export const fetchImageGeneration = async (requestBody:ImageGenerationRequest) =
     }
   };
 
-export const fetchImageGenerationStatus = async (taskId: string) => {
-  return new Promise<QueryImageGenerationSingleResponse>((resolve, reject) => {
+export const fetchImageToVideoStatus = async (taskId: string) => {
+  return new Promise<QueryImage2VideoSingleResponse>((resolve, reject) => {
     const checkStatus = async () => {
       try {
-        const response = await axios.get<QueryImageGenerationSingleResponse>(`${tmpHost}/api/ImagesGenerations/${taskId}`,{
+        const response = await axios.get<QueryImage2VideoSingleResponse>(`${tmpHost}/api/ImageToVideo/${taskId}`,{
           headers: {
             'Authorization': 'Bearer '+ localStorage.getItem('access_token')
           }
@@ -69,9 +70,9 @@ export const fetchImageGenerationStatus = async (taskId: string) => {
   });
 };
 
-export const fetchImageGenerationTaskList = async (page: number = 0, pageSize: number = 0) => {
+export const fetchImageToVideoTaskList = async (page: number = 0, pageSize: number = 0) => {
   try {
-    const response = await axios.get<QueryImageGenerationListResponse>(`${tmpHost}/api/ImagesGenerations?pageNum=${page}&pageSize=${pageSize}`,{
+    const response = await axios.get<QueryImage2VideoListResponse>(`${tmpHost}/api/ImageToVideo?pageNum=${page}&pageSize=${pageSize}`,{
       headers: {
         'Authorization': 'Bearer '+ localStorage.getItem('access_token')
       }
@@ -84,35 +85,36 @@ export const fetchImageGenerationTaskList = async (page: number = 0, pageSize: n
     message.error("请求server失败");
   }
 }
- const responseToReducer = (response:QueryImageGenerationListResponse) => {
+ const responseToReducer = (response:QueryImage2VideoListResponse) => {
   const { dispatch } = store;
   
   if(response.code.toString() === "0"){
-    dispatch(clearImageGeneration());
-    const reducerData:Array<ImageGenerationHistoryItem> = response.data.map((item) => {
+    dispatch(clearImageToVideo());
+    const reducerData:Array<ImageToVideoHistoryItem> = response.data.map((item) => {
+
       if(item.result){
-        return {
-          id: item.result.task_id,
-          src: item.result.task_result?.images??[],
-          thumbnailSrc: item.result.task_result?.images[0]?item.result.task_result?.images[0].url:item.request.image??"",
-          task_status: item.result.task_status,
-          prompt: item.request.prompt,
-          negative_prompt: item.request.negative_prompt,
-          created_at: item.task.created_at,
-        }
        
+      return {
+        id: item.result.task_id,
+        src: item.result.task_result?.videos??[],
+        thumbnailSrc: item.request.image,
+        task_status: item.result.task_status,
+        prompt: item.request.prompt??"",
+        negativePrompt: item.request.negative_prompt??"",
+        created_at: item.task.created_at,
+      }
       }else{
         return {
           id: item.task.task_id,
           src: [],
-          thumbnailSrc: item.request.image?item.request.image:"",
+          thumbnailSrc: item.request.image,
           task_status: "processing",
-          prompt: item.request.prompt,
-          negative_prompt: item.request.negative_prompt,
+          prompt: item.request.prompt??"",
+          negativePrompt: item.request.negative_prompt??"",
           created_at: item.task.created_at,
         }
       }
     })
-    dispatch(fetchSuccessImageGeneration(reducerData));
+    dispatch(fetchSuccessImageToVideo(reducerData));
   }
 }

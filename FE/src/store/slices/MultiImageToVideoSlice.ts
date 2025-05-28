@@ -3,30 +3,30 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CommonHistoryItem } from './ImageGenerationSlice';
 
 
-interface MultiImageToHistoryItem extends CommonHistoryItem {
+export interface MultiImageToVideoHistoryItem extends CommonHistoryItem {
   prompt: string;
   negativePrompt: string;
 }
 
- interface MultiImageToHistoryState {
-  MultiImageToVideoHistory: MultiImageToHistoryItem[];
+ interface MultiImageToVideoHistoryState {
+  MultiImageToVideoHistory: MultiImageToVideoHistoryItem[];
 }
 
-const initialState: MultiImageToHistoryState = {
+const initialState: MultiImageToVideoHistoryState = {
   MultiImageToVideoHistory: [],
 };
 
 // 创建Slice
-const MultiImageToHistorySlice = createSlice({
+const MultiImageToVideoHistorySlice = createSlice({
   name: 'MultiImageTo',
   initialState,
   reducers: {
     // 图像生成历史加载成功
-    fetchSuccessMultiImageTo: (state, action: PayloadAction<MultiImageToHistoryItem[]>) => {
+    fetchSuccessMultiImageToVideo: (state, action: PayloadAction<MultiImageToVideoHistoryItem[]>) => {
       state.MultiImageToVideoHistory = action.payload;
     },
     // 清空历史记录
-    clearMultiImageTo: (state) => {
+    clearMultiImageToVideo: (state) => {
       state.MultiImageToVideoHistory = [];
     }
   },
@@ -34,8 +34,8 @@ const MultiImageToHistorySlice = createSlice({
 
 // 导出Action Creator和Reducer
 export const { 
-  fetchSuccessMultiImageTo,
-  clearMultiImageTo,
-} = MultiImageToHistorySlice.actions;
+  fetchSuccessMultiImageToVideo,
+  clearMultiImageToVideo,
+} = MultiImageToVideoHistorySlice.actions;
 
-export default MultiImageToHistorySlice.reducer;
+export default MultiImageToVideoHistorySlice.reducer;

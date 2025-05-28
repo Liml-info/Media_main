@@ -1,10 +1,16 @@
 import React from 'react';
-import { Flex, Layout, Menu } from 'antd';
+import { Button, Flex, Layout, Menu } from 'antd';
 import type { MenuProps } from 'antd';
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
-import { HomeOutlined, FolderOutlined, PictureOutlined, PlaySquareOutlined, ProductOutlined, AliwangwangOutlined } from '@ant-design/icons';
+import { HomeOutlined, FolderOutlined, PictureOutlined, PlaySquareOutlined, ProductOutlined, AliwangwangOutlined, LogoutOutlined } from '@ant-design/icons';
 type MenuItem = Required<MenuProps>['items'][number];
 import logoUrl from '@/assets/images/logo.png';
+import { store } from '@/store';
+import { clearVirtualTryOn } from '@/store/slices/VirtualTryOnSlice';
+import { clearImageGeneration } from '@/store/slices/ImageGenerationSlice';
+import { clearImageToVideo } from '@/store/slices/ImageToVideoSlice';
+import { clearMultiImageToVideo } from '@/store/slices/MultiImageToVideoSlice';
+import { clearTextToVideo } from '@/store/slices/TextToVideoSlice';
 const items: MenuItem[] = [
   {
     key: '/main',
@@ -63,7 +69,7 @@ const MainLayout: React.FC = () => {
       <Sider style={siderStyle}>
         <Flex vertical style={{ height: "100%", backgroundColor: "#1f1f1f" }}>
         <Flex vertical style={{ alignItems:"center" }}>
-        <Link to="/">
+        <Link to="/main">
             <img
               src={logoUrl}
               alt="Company Logo"
@@ -77,6 +83,20 @@ const MainLayout: React.FC = () => {
             defaultSelectedKeys={[location.pathname]}
             items={items}
           />
+        <Flex vertical style={{ alignItems:"center" , marginBottom:20 }}>
+        <Button block icon={<LogoutOutlined />}
+        onClick={() => {
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
+          store.dispatch(clearVirtualTryOn());
+          store.dispatch(clearImageGeneration());
+          store.dispatch(clearImageToVideo());
+          store.dispatch(clearMultiImageToVideo());
+          store.dispatch(clearTextToVideo());
+          navigate("/");
+        }} 
+        >ログアウト</Button>
+        </Flex>
         </Flex>
       </Sider>
       <Content>

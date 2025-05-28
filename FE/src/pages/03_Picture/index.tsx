@@ -1,7 +1,7 @@
 import { ImageAspectRatioType, ModelType, PictureContext } from "@/contexts/PictureContext";
 import { Button, Flex, message, Select, Space, Typography } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import ImgUpload from "./components/ImgUpload";
 import RefrenceImage from "./components/ImgUpload";
 import SimpleBar from "simplebar-react";
@@ -12,6 +12,7 @@ const { Title, Text } = Typography;
 
 const App: React.FC = () => {
   const { state, dispatch } = useContext(PictureContext);
+  const [loading, setLoading] = useState(false);
 const aspect_ratio_options = useMemo(() => {
   if(state.model_name == "kling-v1-5"){
     return[
@@ -73,7 +74,7 @@ const aspect_ratio_options = useMemo(() => {
               }}
               placeholder="生成したいビデオの内容について説明してください"
               maxLength={2500}
-              autoSize={{ minRows: 3, maxRows: 5 }}></TextArea>
+              autoSize={{ minRows: 3}}></TextArea>
           </Flex>
         </Flex>
         <Flex vertical style={{ marginBottom: "10px" }}>
@@ -99,7 +100,7 @@ const aspect_ratio_options = useMemo(() => {
                     }}
                     placeholder="ビデオに表示したくない内容を入力してください。例：アニメーション、ファジィ表現、変形加工、破壊表現、低品質素材、コラージュ..."
                     maxLength={2500}
-                    autoSize={{ minRows: 3, maxRows: 5 }}></TextArea>
+                    autoSize={{ minRows: 3 }}></TextArea>
                 </Flex>
               </Flex> : null
           }
@@ -134,7 +135,7 @@ const aspect_ratio_options = useMemo(() => {
         />
       </Space>
       <Flex style={{ alignItems: "center", padding: "0px 20px", height: "65px", justifyContent: "flex-end",flexShrink:0  }}>
-        <Button type="primary" style={{width:"60%",height:"40px"}} onClick={()=>{
+        <Button type="primary" loading={loading} style={{width:"60%",height:"40px"}} onClick={()=>{
           const tmpImage = state.image_reference.value === "face"? state.face.faceImg : state.image.value;
           const tmpImageFidelity = state.image_reference.value === "face"? state.face.image_fidelity : 
           state.image_reference.value === "bgReference"? state.bgReference.image_fidelity : state.subject.image_fidelity;
@@ -157,8 +158,9 @@ const aspect_ratio_options = useMemo(() => {
           
           const result =  ImageGenerationSchema.safeParse(requestBody);
           if(result.success){
+            setLoading(true);
             fetchImageGeneration(result.data).then((res)=>{
-              console.log(res);
+              setLoading(false);
             })
           }else{
             result.error.errors.forEach((error)=>{

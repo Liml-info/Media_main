@@ -1,6 +1,6 @@
 import { ControlOutlined } from "@ant-design/icons";
 import { Button, Flex, message, Popover, Radio, Select, Slider, Space, Tabs, Typography } from "antd";
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import ImgUpload from "./components/ImgUpload";
 import TextArea from "antd/es/input/TextArea";
 import { AspectRatio, Duration, InputImageType, inputType, Mode, ModelName, VideoContext } from "@/contexts/VideoContext";
@@ -13,6 +13,9 @@ import { MultiImageToVideoRequestSchema, MultiImageToVideoValidationErrorMap } f
 import { MultiImageToVideoRequest } from "@/types/MultiImageToVideoRequest";
 import { ImageToVideoRequest } from "@/types/ImageToVideoRequest";
 import { TextToVideoRequest } from "@/types/TextToVideoRequest";
+import { fetchTextToVideo } from "@/services/TextToVideo";
+import { fetchImageToVideo } from "@/services/imageToVideo";
+import { fetchMultiMultiImageToVideo } from "@/services/MultiImageToVideo";
 const { Title, Text } = Typography;
 
 
@@ -33,6 +36,7 @@ const Types: TabsProps['items'] = [
 
 const App: React.FC = () => {
   const { state, dispatch } = useContext(VideoContext);
+  const [loading, setLoading] = useState(false);
   const { model_name, input_type, input_image_type } = state;
   const isTextInput = input_type === "text";
   const isAspectRatioShow = input_type === "text" || (input_type === "image" && input_image_type === "mulitple");
@@ -87,7 +91,7 @@ const App: React.FC = () => {
 
   return (
     <Flex vertical style={{ height: "100%" }}>
-      <Flex style={{ padding: "0px 20px", height: "65px", borderBottom: "1px solid", alignItems: "center",flexShrink:0 }}>
+      <Flex style={{ padding: "0px 20px", height: "65px", borderBottom: "1px solid", alignItems: "center", flexShrink: 0 }}>
         <Space>
           <Title level={4}>ビデオ生成</Title>
           <Select
@@ -102,7 +106,7 @@ const App: React.FC = () => {
         </Space>
       </Flex>
       <Flex vertical style={{ padding: "0px 20px", flexGrow: 1, overflow: "hidden" }}>
-        <SimpleBar style={{height:"100%"}}>
+        <SimpleBar style={{ height: "100%" }}>
           <Flex>
             <Tabs activeKey={input_type} style={{ width: "100%" }} items={Types} onChange={(key: string) => {
               if (key === "text" && model_name == "kling-v1-5") {
@@ -167,7 +171,7 @@ const App: React.FC = () => {
                 }}
                 placeholder="生成したいビデオの内容について説明してください"
                 maxLength={2500}
-                autoSize={{ minRows: 3, maxRows: 5 }}></TextArea>
+                autoSize={{ minRows: 5 }}></TextArea>
             </Flex>
           </Flex>
           <Flex vertical style={{ marginBottom: "10px" }}>
@@ -183,7 +187,7 @@ const App: React.FC = () => {
                 }}
                 placeholder="ビデオに表示したくない内容を入力してください。例：アニメーション、ファジィ表現、変形加工、破壊表現、低品質素材、コラージュ..."
                 maxLength={2500}
-                autoSize={{ minRows: 3, maxRows: 5 }}></TextArea>
+                autoSize={{ minRows: 3 }}></TextArea>
             </Flex>
           </Flex>
         </SimpleBar>
@@ -232,11 +236,11 @@ const App: React.FC = () => {
           </Button>
         </Popover>
       </Space>
-      <Flex style={{ alignItems: "center", padding: "0px 20px", height: "65px", justifyContent: "flex-end",flexShrink:0 }}>
-        <Button type="primary" style={{width:"60%",height:"40px"}} onClick={() => {
+      <Flex style={{ alignItems: "center", padding: "0px 20px", height: "65px", justifyContent: "flex-end", flexShrink: 0 }}>
+        <Button type="primary" loading={loading} style={{ width: "60%", height: "40px" }} onClick={() => {
           if (input_type === "text") {
-            const tmpRequest:TextToVideoRequest = {
-              model_name: state.model_name === "kling-v1-5" ? undefined : state.model_name  ,
+            const tmpRequest: TextToVideoRequest = {
+              model_name: state.model_name === "kling-v1-5" ? undefined : state.model_name,
               prompt: state.prompt,
               negative_prompt: state.negative_prompt,
               mode: state.mode,
@@ -244,18 +248,22 @@ const App: React.FC = () => {
               aspect_ratio: state.aspect_ratio,
               cfg_scale: state.cfg_scale,
             }
-            const result =  TextToVideoRequestSchema.safeParse(tmpRequest,{ errorMap: TextToVideoValidationErrorMap });
+            const result = TextToVideoRequestSchema.safeParse(tmpRequest, { errorMap: TextToVideoValidationErrorMap });
             if (result.success) {
-              console.log(result.data);
+              setLoading(true);
+              fetchTextToVideo(result.data).then((res) => {
+                setLoading(false);
+              });
               return;
-            }else{
-              result.error.errors.forEach((error)=>{
+            } else {
+              result.error.errors.forEach((error) => {
                 message.error(error.message);
-                console.log(error.path,error.message);})
+                console.log(error.path, error.message);
+              })
             }
-          }else{
+          } else {
             if (input_image_type == "firstend") {
-              const tmpRequest:ImageToVideoRequest = {
+              const tmpRequest: ImageToVideoRequest = {
                 model_name: state.model_name,
                 prompt: state.prompt,
                 negative_prompt: state.negative_prompt,
@@ -264,20 +272,24 @@ const App: React.FC = () => {
                 aspect_ratio: state.aspect_ratio,
                 image: state.image,
                 cfg_scale: state.cfg_scale,
-                image_tail: state.image_tail?state.image_tail:undefined,
+                image_tail: state.image_tail ? state.image_tail : undefined,
               }
-            const result =  ImageToVideoRequestSchema.safeParse(tmpRequest,{ errorMap: ImageToVideoValidationErrorMap });
-            if (result.success) {
-              console.log(result.data);
-              return;
-            }else{
-              result.error.errors.forEach((error)=>{
-                message.error(error.message);
-                console.log(error.path,error.message);})
-            }
-            }else{
-              const tmpImage_list = state.image_list.filter((item)=>item!=undefined && item.image);
-              const tmpRequest:MultiImageToVideoRequest = {
+              const result = ImageToVideoRequestSchema.safeParse(tmpRequest, { errorMap: ImageToVideoValidationErrorMap });
+              if (result.success) {
+                setLoading(true);
+                fetchImageToVideo(result.data).then((res) => {
+                  setLoading(false);
+                })
+                return;
+              } else {
+                result.error.errors.forEach((error) => {
+                  message.error(error.message);
+                  console.log(error.path, error.message);
+                })
+              }
+            } else {
+              const tmpImage_list = state.image_list.filter((item) => item != undefined && item.image);
+              const tmpRequest: MultiImageToVideoRequest = {
                 model_name: 'kling-v1-6',
                 prompt: state.prompt,
                 negative_prompt: state.negative_prompt,
@@ -286,15 +298,18 @@ const App: React.FC = () => {
                 aspect_ratio: state.aspect_ratio,
                 image_list: tmpImage_list,
               }
-              const result =  MultiImageToVideoRequestSchema.safeParse(tmpRequest,{ errorMap: MultiImageToVideoValidationErrorMap });
-            if (result.success) {
-              console.log(result.data);
-              return;
-            }else{
-              result.error.errors.forEach((error)=>{
-                message.error(error.message);
-                console.log(error.path,error.message);})
-            }
+              const result = MultiImageToVideoRequestSchema.safeParse(tmpRequest, { errorMap: MultiImageToVideoValidationErrorMap });
+              if (result.success) {
+                setLoading(true);
+                fetchMultiMultiImageToVideo(result.data).then((res) => {
+                  setLoading(false);
+                })
+                return;
+              } else {
+                result.error.errors.forEach((error) => {
+                  message.error(error.message);
+                })
+              }
             }
           }
         }}>生成する</Button>

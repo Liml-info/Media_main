@@ -15,7 +15,6 @@ const MultiImgUpload: React.FC = () => {
     newImageList[index] = {
       image: imageUrl, // 新しい画像を設定
     };
-    console.log(newImageList);
     
     dispatch({ type: "SET_IMAGE_LIST", payload: newImageList }); // 画像リストを更新  
   }
