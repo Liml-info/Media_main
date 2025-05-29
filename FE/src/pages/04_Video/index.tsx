@@ -160,7 +160,7 @@ const App: React.FC = () => {
           }
           <Flex vertical style={{ marginBottom: "10px" }}>
             <Space style={{ marginBottom: "10px" }}>
-              <Text>{isTextInput ? "クリエイティブな説明" : "クリエイティブな説明（オプション）"}</Text>
+              <Text>{isAspectRatioShow ? "クリエイティブな説明" : "クリエイティブな説明（オプション）"}</Text>
             </Space>
             <Flex>
               <TextArea
@@ -251,7 +251,7 @@ const App: React.FC = () => {
             const result = TextToVideoRequestSchema.safeParse(tmpRequest, { errorMap: TextToVideoValidationErrorMap });
             if (result.success) {
               setLoading(true);
-              fetchTextToVideo(result.data).then((res) => {
+              fetchTextToVideo(result.data).then(() => {
                 setLoading(false);
               });
               return;
@@ -277,7 +277,7 @@ const App: React.FC = () => {
               const result = ImageToVideoRequestSchema.safeParse(tmpRequest, { errorMap: ImageToVideoValidationErrorMap });
               if (result.success) {
                 setLoading(true);
-                fetchImageToVideo(result.data).then((res) => {
+                fetchImageToVideo(result.data).then(() => {
                   setLoading(false);
                 })
                 return;
@@ -301,7 +301,7 @@ const App: React.FC = () => {
               const result = MultiImageToVideoRequestSchema.safeParse(tmpRequest, { errorMap: MultiImageToVideoValidationErrorMap });
               if (result.success) {
                 setLoading(true);
-                fetchMultiMultiImageToVideo(result.data).then((res) => {
+                fetchMultiMultiImageToVideo(result.data).then(() => {
                   setLoading(false);
                 })
                 return;

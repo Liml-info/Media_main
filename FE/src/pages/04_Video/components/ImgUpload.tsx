@@ -4,15 +4,8 @@ import type { UploadProps } from 'antd';
 import { Avatar, Flex, message, Space, Tooltip, Upload } from 'antd';
 import { RcFile } from 'antd/es/upload';
 import { VideoContext } from '@/contexts/VideoContext';
-import { createStyles } from 'antd-style';
 
 const { Dragger } = Upload;
-const useStyles = createStyles(({ token }) => ({
-  dynamicBtn: {
-    backgroundColor: token.colorPrimary,
-    '&:hover': { opacity: 0.8 }
-  },
-}));
 
 const ImgUpload: React.FC = () => {
   const { state, dispatch } = useContext(VideoContext);
@@ -113,7 +106,7 @@ const DraggerProps: UploadProps = {
   showUploadList: false,
 };
 const ShowImages = (props: { src: string, isFirst: boolean }) => {
-  const { state, dispatch } = useContext(VideoContext);
+  const { dispatch } = useContext(VideoContext);
 
   const delImg = () => {
     if (props.isFirst) {

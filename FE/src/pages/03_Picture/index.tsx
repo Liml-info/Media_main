@@ -2,7 +2,6 @@ import { ImageAspectRatioType, ModelType, PictureContext } from "@/contexts/Pict
 import { Button, Flex, message, Select, Space, Typography } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useContext, useMemo, useState } from "react";
-import ImgUpload from "./components/ImgUpload";
 import RefrenceImage from "./components/ImgUpload";
 import SimpleBar from "simplebar-react";
 import { ImageGenerationSchema } from "@/zod/ImageGeneration";
@@ -159,7 +158,7 @@ const aspect_ratio_options = useMemo(() => {
           const result =  ImageGenerationSchema.safeParse(requestBody);
           if(result.success){
             setLoading(true);
-            fetchImageGeneration(result.data).then((res)=>{
+            fetchImageGeneration(result.data).then(()=>{
               setLoading(false);
             })
           }else{

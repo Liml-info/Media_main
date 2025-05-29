@@ -6,7 +6,7 @@ import { GeneratorResponseType } from "@/types/GeneratorResponse";
 import { message } from "antd";
 import { clearTextToVideo, fetchSuccessTextToVideo, TextToVideoHistoryItem } from "@/store/slices/TextToVideoSlice";
 
-const tmpHost = "http://localhost:5000";
+const tmpHost = "http://43.207.196.88";
 
 export const fetchTextToVideo = async (requestBody:TextToVideoRequest) => {
     try {

@@ -1,4 +1,4 @@
-import React, {
+import {
     createContext,
     useState,
     useEffect,
@@ -16,7 +16,7 @@ import React, {
     useEffect(() => {
       const initializeAuth = async () => {
         const access_token = localStorage.getItem('access_token');
-        const refresh_token = localStorage.getItem('refresh_token');
+        //const refresh_token = localStorage.getItem('refresh_token');
         if (access_token ) {
           // TODO: 验证token的有效性
           setUser({ access_token });

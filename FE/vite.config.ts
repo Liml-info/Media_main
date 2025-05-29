@@ -9,8 +9,7 @@ export default defineConfig({
     vitePluginImp({
       libList: [
         {
-          libName: 'antd',
-          style: name => `antd/es/${name}/style`
+          libName: 'antd'
         }
       ]
     })

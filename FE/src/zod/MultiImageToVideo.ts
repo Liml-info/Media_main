@@ -11,7 +11,7 @@ export const MultiImageToVideoRequestSchema = z.object({
   image_list: z.array(ImageItemSchema)
     .min(1, '少なくとも1枚の参照画像を提供する必要があります')
     .max(4, '参照画像の数は4枚を超えてはなりません'),
-  prompt: z.string().max(2500, 'プロンプト（肯定的な指示）の長さは2500文字を超えてはなりません').optional(),
+  prompt: z.string().nonempty('プロンプト（肯定的な指示）は空にできません').max(2500, 'プロンプト（肯定的な指示）の長さは2500文字を超えてはなりません').optional(),
   negative_prompt: z.string().max(2500, 'ネガティブプロンプトの長さは2500文字を超えてはなりません').optional(),
   mode: z.enum(['std', 'pro']).optional(),
   duration: z.enum(['5', '10']).optional(),

@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Flex, Layout, Menu } from 'antd';
 import type { MenuProps } from 'antd';
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
-import { HomeOutlined, FolderOutlined, PictureOutlined, PlaySquareOutlined, ProductOutlined, AliwangwangOutlined, LogoutOutlined } from '@ant-design/icons';
+import { HomeOutlined, FolderOutlined, PictureOutlined, PlaySquareOutlined, AliwangwangOutlined, LogoutOutlined } from '@ant-design/icons';
 type MenuItem = Required<MenuProps>['items'][number];
 import logoUrl from '@/assets/images/logo.png';
 import { store } from '@/store';

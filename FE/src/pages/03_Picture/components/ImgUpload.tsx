@@ -1,11 +1,10 @@
 import { PictureAction, PictureContext } from '@/contexts/PictureContext';
-import { DeleteOutlined, InboxOutlined, PlusSquareOutlined, UploadOutlined } from '@ant-design/icons';
+import { DeleteOutlined, InboxOutlined, UploadOutlined } from '@ant-design/icons';
 import * as faceapi from '@vladmandic/face-api';
 import type { UploadProps } from 'antd';
-import { Avatar, Button, Divider, Flex, message, Slider, Space, Spin, Tooltip, Upload } from 'antd';
-import { createStyles } from 'antd-style';
+import {Button, Divider, Flex, message, Slider, Space, Spin, Tooltip, Upload } from 'antd';
 import { RcFile } from 'antd/es/upload';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { FaceImgAction, FaceImgContext, FaceImgProvider } from '../contexts/FaceImgContext';
 
 const { Dragger } = Upload;
@@ -479,7 +478,7 @@ const ShowImages = (props: { src: string }) => {
                 objectFit: "contain",
                 position: "absolute",
               }}
-              onLoad={(e) => {
+              onLoad={() => {
                 if (imgRef.current) {
                   dispatchFaceImg({ type: "SER_Zoom", payload: imgRef.current.clientHeight / imgRef.current.naturalHeight });
                 }

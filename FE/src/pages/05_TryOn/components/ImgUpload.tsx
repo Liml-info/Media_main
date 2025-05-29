@@ -1,10 +1,8 @@
 import React, { useContext } from 'react';
 import { DeleteOutlined, InboxOutlined, UploadOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
-import { Avatar, Flex, message, Space, Tooltip, Upload } from 'antd';
+import { Flex, message, Tooltip, Upload } from 'antd';
 import { RcFile } from 'antd/es/upload';
-import { VideoContext } from '@/contexts/VideoContext';
-import { createStyles } from 'antd-style';
 import { TryOnContext } from '@/contexts/TryOnContext';
 
 const { Dragger } = Upload;

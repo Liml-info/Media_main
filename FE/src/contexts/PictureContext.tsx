@@ -7,13 +7,7 @@ interface ValueType<T> {
 type ReferenceType = 'subject' | 'face' | 'bgReference';
 export type ModelType = 'kling-v1-5' | 'kling-v1';
 export  type ImageAspectRatioType = '16:9' | '9:16' | '1:1' | '4:3' | '3:4' | '3:2' | '2:3' | '21:9';
-interface FaceImgInfo {
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  image: string,
-}
+
 type State = {
   model_name: ModelType;
   prompt: ValueType<string>;

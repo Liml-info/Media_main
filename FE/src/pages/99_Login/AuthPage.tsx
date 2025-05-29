@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
-import { Tabs, Form, Input, Button, Checkbox, Space, Flex, message } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
+import  { useState } from 'react';
+import {  Form, Input, Button, Flex, message } from 'antd';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { createStyles, keyframes } from 'antd-style';
-import type { TabsProps } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { fetchHistory } from '@/services/getHistory';
 import logoUrl from '@/assets/images/logo.png';
-import { loginToServer } from '@/services/authentication';
 import { useAuth } from '@/contexts/AuthContext';
 import axios from 'axios';
 import modal from 'antd/es/modal';
@@ -59,7 +56,6 @@ const useStyles = createStyles(({ }) => {
 });
 
 const AuthPage = () => {
-  const [activeKey, setActiveKey] = useState('login');
   const { styles } = useStyles();
   // const items: TabsProps['items'] = [
   //   {
@@ -111,12 +107,8 @@ interface LoginResponse {
   },
   message: string;
   } 
-interface LoginRequest  {
-    username: string;
-    password: string;
-}
 
-const tmpHost = "http://localhost:5000";
+const tmpHost = "http://43.207.196.88";
 // ログインフォームコンポーネント
 // interface LoginFormProps {
 //   switchTab: React.Dispatch<React.SetStateAction<string>>;

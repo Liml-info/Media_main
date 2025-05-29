@@ -1,4 +1,4 @@
-import { JSX, useEffect } from 'react';
+import { JSX } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 

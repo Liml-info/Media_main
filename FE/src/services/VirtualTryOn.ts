@@ -6,7 +6,7 @@ import { GeneratorResponseType } from "@/types/GeneratorResponse";
 import { message } from "antd";
 import { clearVirtualTryOn, fetchSuccessVirtualTryOn, VirtualTryOnHistoryItem } from "@/store/slices/VirtualTryOnSlice";
 
-const tmpHost = "http://localhost:5000";
+const tmpHost = "http://43.207.196.88";
 
 export const fetchVirtualTryOn = async (requestBody:VirtualTryOnRequest) => {
     try {

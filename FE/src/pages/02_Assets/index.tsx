@@ -1,15 +1,10 @@
-import { Button, Dropdown, Flex, MenuProps, Image , Space, Typography, Modal, Spin } from "antd";
+import { Dropdown, Flex, MenuProps, Image , Space, Modal, Spin } from "antd";
 import { DownOutlined,DownloadOutlined  } from "@ant-design/icons";
-import { useContext, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import videoUrl from "@/assets/images/video.jpg";
-import tryonUrl from "@/assets/images/tryon.jpg";
-import pictureUrl from "@/assets/images/picture.jpg";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { fetchHistory } from "@/services/getHistory";
 import { VirtualTryOnHistoryItem } from "@/store/slices/VirtualTryOnSlice";
-import Item from "antd/es/list/Item";
 import { ImageGenerationHistoryItem } from "@/store/slices/ImageGenerationSlice";
 import { ImageToVideoHistoryItem } from "@/store/slices/ImageToVideoSlice";
 import { TextToVideoHistoryItem } from "@/store/slices/TextToVideoSlice";

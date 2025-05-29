@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { Button, Dropdown, Flex, Layout, Menu, Divider, Splitter } from 'antd';
+import {  Dropdown, Flex, Layout, Menu, Splitter } from 'antd';
 import type { MenuProps } from 'antd';
-import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
-import { BarsOutlined, HomeOutlined, FolderOutlined, PictureOutlined, PlaySquareOutlined, ProductOutlined, AliwangwangOutlined } from '@ant-design/icons';
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { BarsOutlined, HomeOutlined, FolderOutlined, PictureOutlined, PlaySquareOutlined, AliwangwangOutlined } from '@ant-design/icons';
 import ToolRight from '@/pages/06_ToolRight';
 import { fetchHistory } from '@/services/getHistory';
 type MenuItem = Required<MenuProps>['items'][number];

@@ -1,5 +1,4 @@
-import { Button, Flex, Select, Space, Typography } from "antd";
-import { useContext } from "react";
+import { Flex} from "antd";
 import { useNavigate } from "react-router-dom";
 import videoUrl from "@/assets/images/video.jpg";
 import tryonUrl from "@/assets/images/tryon.jpg";

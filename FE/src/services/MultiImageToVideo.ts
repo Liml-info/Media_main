@@ -6,7 +6,7 @@ import { GeneratorResponseType } from "@/types/GeneratorResponse";
 import { message } from "antd";
 import { clearMultiImageToVideo, fetchSuccessMultiImageToVideo, MultiImageToVideoHistoryItem } from "@/store/slices/MultiImageToVideoSlice";
 
-const tmpHost = "http://localhost:5000";
+const tmpHost = "http://43.207.196.88";
 
 export const fetchMultiMultiImageToVideo = async (requestBody:MultiImageToVideoRequest) => {
     try {

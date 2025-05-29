@@ -56,7 +56,7 @@ const App: React.FC = () => {
           const result =  VirtualTryOnRequestSchema.safeParse(state,{ errorMap: validationErrorMap });
           if (result.success) {
             setLoading(true);
-            fetchVirtualTryOn(result.data).then((res) => {
+            fetchVirtualTryOn(result.data).then(() => {
               setLoading(false);
               message.success("生成しました");
             });
