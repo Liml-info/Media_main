@@ -6,7 +6,7 @@ import { GeneratorResponseType } from "@/types/GeneratorResponse";
 import { message } from "antd";
 import { clearImageGeneration, fetchSuccessImageGeneration, ImageGenerationHistoryItem } from "@/store/slices/ImageGenerationSlice";
 
-const tmpHost = "http://43.207.196.88";
+const tmpHost = "http://43.207.196.88:5000";
 
 export const fetchImageGeneration = async (requestBody:ImageGenerationRequest) => {
     try {

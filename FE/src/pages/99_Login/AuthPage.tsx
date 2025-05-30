@@ -108,7 +108,7 @@ interface LoginResponse {
   message: string;
   } 
 
-const tmpHost = "http://43.207.196.88";
+const tmpHost = "http://43.207.196.88:5000";
 // ログインフォームコンポーネント
 // interface LoginFormProps {
 //   switchTab: React.Dispatch<React.SetStateAction<string>>;

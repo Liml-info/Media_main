@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const tmpHost = "http://43.207.196.88";
+const tmpHost = "http://43.207.196.88:5000";
 interface LoginResponse {
   access_token: string;
   refresh_token: string;
